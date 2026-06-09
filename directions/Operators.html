@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pilot Projects — Operators for growing companies</title>
+<link rel="icon" type="image/png" href="../assets/mark-ink.png">
+<style>
+  :root{
+    --bg:#f1ede4;
+    --paper:#f8f5ee;
+    --ink:#14140e;
+    --ink-2:#56524a;
+    --ink-3:#8b867a;
+    --line:#d6d0c3;
+    --line-2:#e4dfd2;
+    --acc:oklch(0.46 0.10 152);
+    --acc-soft:oklch(0.46 0.10 152 / 0.10);
+    --sans:"Helvetica Neue",Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,"SF Mono","Menlo","Roboto Mono",monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;line-height:1.5;overflow-x:hidden}
+  ::selection{background:var(--ink);color:var(--bg)}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1300px;margin:0 auto;padding:0 44px}
+  .mono{font-family:var(--mono);font-size:11.5px;letter-spacing:0.13em;text-transform:uppercase}
+
+  /* header */
+  header{position:fixed;inset:0 0 auto 0;z-index:60;border-bottom:1px solid transparent;transition:background .35s,backdrop-filter .35s,border-color .35s}
+  header.solid{background:rgba(241,237,228,0.85);backdrop-filter:blur(16px);border-bottom:1px solid var(--line-2)}
+  .bar{display:flex;align-items:center;justify-content:space-between;height:80px}
+  .brand{display:flex;align-items:center;gap:13px;font-weight:700;letter-spacing:-0.01em;font-size:17px}
+  .brand img{height:24px;width:auto;display:block}
+  nav.links{display:flex;gap:36px}
+  nav.links a{font-size:14px;color:var(--ink-2);transition:color .2s;position:relative}
+  nav.links a::after{content:"";position:absolute;left:0;right:100%;bottom:-5px;height:1.5px;background:var(--ink);transition:right .28s cubic-bezier(.2,.7,.2,1)}
+  nav.links a:hover{color:var(--ink)}
+  nav.links a:hover::after{right:0}
+  .btn{display:inline-flex;align-items:center;gap:10px;font-size:14px;font-weight:600;
+    padding:12px 22px;border-radius:2px;background:var(--ink);color:var(--bg);transition:transform .2s,background .2s}
+  .btn:hover{transform:translateY(-2px);background:var(--acc)}
+  .btn-lg{padding:16px 30px;font-size:15px}
+  .btn-ghost{background:transparent;color:var(--ink);border:1.5px solid var(--ink);padding:14.5px 28px}
+  .btn-ghost:hover{background:var(--ink);color:var(--bg)}
+  .menu-btn{display:none;background:none;border:none;font-family:var(--mono);font-size:12px;letter-spacing:.1em;cursor:pointer}
+
+  /* hero */
+  .hero{padding:176px 0 0;position:relative}
+  .hero-tag{display:inline-flex;align-items:center;gap:11px;color:var(--ink-2);
+    border:1px solid var(--line);border-radius:999px;padding:8px 16px 8px 13px;margin-bottom:40px}
+  .hero-tag .d{width:7px;height:7px;border-radius:50%;background:var(--acc);box-shadow:0 0 0 0 var(--acc);animation:pulse 2.6s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 oklch(0.46 0.10 152 / .45)}70%{box-shadow:0 0 0 8px transparent}100%{box-shadow:0 0 0 0 transparent}}
+  h1.display{font-size:clamp(44px,7.6vw,104px);line-height:0.95;letter-spacing:-0.045em;font-weight:700;max-width:16ch}
+  h1.display .muted{color:var(--ink-3)}
+  .hero-sub{margin-top:38px;font-size:clamp(18px,2.05vw,23px);color:var(--ink-2);max-width:52ch;line-height:1.52}
+  .hero-sub b{color:var(--ink);font-weight:500}
+  .hero-cta{margin-top:46px;display:flex;gap:16px;flex-wrap:wrap;align-items:center}
+  .hero-foot{margin-top:40px;display:flex;align-items:center;gap:14px;color:var(--ink-3);font-size:13.5px}
+  .hero-foot .ln{flex:1;height:1px;background:var(--line);max-width:80px}
+
+  /* logo strip */
+  .strip{margin-top:86px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:26px 0;
+    display:flex;align-items:center;gap:30px;flex-wrap:wrap;justify-content:space-between}
+  .strip .lbl{color:var(--ink-3);white-space:nowrap}
+  .strip .names{display:flex;gap:34px;flex-wrap:wrap;align-items:center}
+  .strip .names span{font-size:16px;font-weight:500;color:var(--ink-2);letter-spacing:-0.01em;transition:color .2s}
+  .strip .names span:hover{color:var(--ink)}
+
+  /* insight band */
+  .insight{padding:120px 0}
+  .insight .k{color:var(--acc);margin-bottom:34px}
+  .insight p{font-size:clamp(26px,3.7vw,46px);line-height:1.22;letter-spacing:-0.025em;font-weight:500;max-width:20ch}
+  .insight p .dim{color:var(--ink-3)}
+
+  /* sections shell */
+  .sec{padding:104px 0;border-top:1px solid var(--line)}
+  .sec-label{display:flex;align-items:baseline;gap:14px;color:var(--ink-3);margin-bottom:46px}
+  .sec-label .num{color:var(--acc);font-weight:600}
+  h2{font-size:clamp(34px,5vw,62px);line-height:1.0;letter-spacing:-0.035em;font-weight:700}
+  h2 em{font-style:normal;color:var(--ink-3)}
+
+  /* two lanes */
+  .lanes{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--line);background:var(--line)}
+  .lane{background:var(--paper);padding:48px 44px 44px;display:flex;flex-direction:column;min-height:340px;position:relative;transition:background .25s}
+  .lane:hover{background:var(--bg)}
+  .lane .tag{color:var(--acc);margin-bottom:22px}
+  .lane h3{font-size:30px;font-weight:600;letter-spacing:-0.02em;margin-bottom:14px}
+  .lane p{color:var(--ink-2);font-size:16px;line-height:1.6;max-width:38ch;margin-bottom:26px}
+  .lane .go{margin-top:auto;display:inline-flex;align-items:center;gap:9px;font-weight:600;font-size:15px;color:var(--ink)}
+  .lane .go .ar{transition:transform .25s}
+  .lane:hover .go .ar{transform:translateX(4px)}
+  .lane .status{position:absolute;top:48px;right:44px;font-size:11px;font-family:var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);
+    border:1px solid var(--line);border-radius:999px;padding:5px 11px}
+
+  /* capabilities */
+  .cap-intro{display:flex;justify-content:space-between;align-items:flex-end;gap:40px;flex-wrap:wrap;margin-bottom:56px}
+  .cap-intro p{color:var(--ink-2);font-size:17px;line-height:1.55;max-width:38ch}
+  .caps{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line)}
+  .cap{background:var(--bg);padding:34px 30px 40px;min-height:200px;display:flex;flex-direction:column;transition:background .25s}
+  .cap:hover{background:var(--paper)}
+  .cap .ci{font-family:var(--mono);font-size:12px;color:var(--acc);margin-bottom:auto;letter-spacing:.08em}
+  .cap h4{font-size:20px;font-weight:600;letter-spacing:-0.01em;margin:34px 0 9px}
+  .cap p{color:var(--ink-2);font-size:14.5px;line-height:1.55}
+
+  /* how to work — paths */
+  .paths{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start}
+  .path .ph{display:flex;align-items:baseline;gap:14px;margin-bottom:18px}
+  .path .ph .pn{font-family:var(--mono);font-size:12px;color:var(--acc);letter-spacing:.1em}
+  .path h3{font-size:27px;font-weight:600;letter-spacing:-0.02em}
+  .path .pdesc{color:var(--ink-2);font-size:16px;line-height:1.6;margin-bottom:28px;max-width:40ch}
+  .path .pdesc b{color:var(--ink);font-weight:500}
+  .gw-label{color:var(--ink-3);padding-bottom:12px;border-bottom:1.5px solid var(--ink)}
+  .gw{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px 0;border-bottom:1px solid var(--line);transition:padding .25s,background .25s;cursor:pointer}
+  .gw:hover{padding-left:12px}
+  .gw-name{font-size:19px;font-weight:500;letter-spacing:-0.012em}
+  .gw .meta{color:var(--ink-3);font-family:var(--mono);font-size:11px;letter-spacing:.05em}
+  .gw .ar{color:var(--ink-3);transition:transform .25s,color .25s}
+  .gw:hover .ar{color:var(--acc);transform:translate(3px,-3px)}
+  .gw-foot{color:var(--ink-2);font-size:14.5px;margin-top:22px;line-height:1.6}
+  .gw-foot b{color:var(--ink)}
+
+  /* form */
+  form{display:grid;gap:22px}
+  .field{display:grid;gap:9px}
+  .field label{font-family:var(--mono);font-size:10.5px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-3)}
+  .field input,.field textarea,.field select{background:transparent;border:none;border-bottom:1.5px solid var(--line);
+    color:var(--ink);font-family:var(--sans);font-size:17px;padding:9px 0;transition:border-color .2s}
+  .field textarea{resize:vertical;min-height:48px;line-height:1.5}
+  .field input:focus,.field textarea:focus,.field select:focus{outline:none;border-color:var(--ink)}
+  .field select{cursor:pointer;-webkit-appearance:none;appearance:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238b867a' fill='none' stroke-width='1.4'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 0 center}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+  form .btn{justify-content:center;margin-top:6px;padding:16px}
+  .sent{display:none;border:1.5px solid var(--acc);background:var(--acc-soft);padding:34px;border-radius:3px}
+  .sent.show{display:block;animation:fade .5s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .sent h3{font-size:23px;font-weight:600;margin:10px 0 8px;letter-spacing:-0.015em}
+  .sent p{color:var(--ink-2);font-size:15px;max-width:36ch}
+  .sent .ref{margin-top:20px;color:var(--ink-3)}
+
+  /* global */
+  .global{background:var(--ink);color:var(--bg);border:none}
+  .global .gl-top{display:flex;justify-content:space-between;align-items:flex-end;gap:40px;flex-wrap:wrap;margin-bottom:54px}
+  .global h2{color:var(--paper)}
+  .global h2 em{color:rgba(248,245,238,0.4)}
+  .global .gl-sub{color:rgba(248,245,238,0.6);font-size:17px;line-height:1.55;max-width:34ch}
+  .clocks{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(248,245,238,0.12);border:1px solid rgba(248,245,238,0.12)}
+  .clock{background:var(--ink);padding:26px 24px 28px;transition:background .25s}
+  .clock:hover{background:#1d1d15}
+  .clock .city{font-size:17px;font-weight:500;letter-spacing:-0.01em;margin-bottom:4px}
+  .clock .tz{font-family:var(--mono);font-size:10.5px;letter-spacing:.08em;color:rgba(248,245,238,0.4);text-transform:uppercase}
+  .clock .time{font-family:var(--mono);font-size:25px;font-weight:500;margin-top:22px;letter-spacing:.02em;font-variant-numeric:tabular-nums}
+  .clock .time .ampm{font-size:12px;color:rgba(248,245,238,0.45);margin-left:4px}
+
+  /* closing CTA */
+  .closer{padding:130px 0;text-align:center;border-top:1px solid var(--line)}
+  .closer h2{max-width:18ch;margin:0 auto 16px}
+  .closer p{color:var(--ink-2);font-size:18px;max-width:40ch;margin:0 auto 40px;line-height:1.55}
+  .closer .hero-cta{justify-content:center}
+
+  /* footer */
+  footer{border-top:1px solid var(--line);padding:64px 0 40px}
+  .foot-top{display:flex;justify-content:space-between;align-items:flex-start;gap:40px;flex-wrap:wrap}
+  .foot-tag{color:var(--ink-2);font-size:15px;margin-top:18px;max-width:30ch;line-height:1.55}
+  .foot-nav{display:flex;gap:60px;flex-wrap:wrap}
+  .foot-col h5{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);margin-bottom:16px}
+  .foot-col a{display:block;font-size:15px;color:var(--ink-2);padding:5px 0;transition:color .2s}
+  .foot-col a:hover{color:var(--ink)}
+  .foot-bottom{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-top:56px;padding-top:24px;border-top:1px solid var(--line-2);color:var(--ink-3)}
+
+  .reveal{opacity:0;transform:translateY(22px);transition:opacity .7s cubic-bezier(.2,.7,.2,1),transform .7s cubic-bezier(.2,.7,.2,1)}
+  .reveal.in{opacity:1;transform:none}
+
+  @media(max-width:920px){
+    .wrap{padding:0 24px}
+    nav.links{display:none}
+    .hero{padding:130px 0 0}
+    .lanes,.paths{grid-template-columns:1fr}
+    .lane{min-height:auto}
+    .caps{grid-template-columns:1fr}
+    .clocks{grid-template-columns:1fr 1fr}
+    .row2{grid-template-columns:1fr}
+    .insight{padding:84px 0}
+    .sec{padding:76px 0}
+    .lane .status{position:static;align-self:flex-start;margin-bottom:18px}
+    .nav-cta-ghost{display:none}
+  }
+</style>
+</head>
+<body>
+<header id="hdr">
+  <div class="wrap bar">
+    <a href="#top" class="brand"><img src="../assets/mark-ink.png" alt="Pilot Projects">Pilot Projects</a>
+    <nav class="links">
+      <a href="#what">What we do</a>
+      <a href="#capabilities">Capabilities</a>
+      <a href="#work">How to start</a>
+      <a href="#global">Global</a>
+    </nav>
+    <a href="#work" class="btn">Work with us</a>
+  </div>
+</header>
+
+<a id="top"></a>
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-tag mono"><span class="d"></span>Operations &amp; Ventures</div>
+    <h1 class="display">We don't advise companies. <span class="muted">We operate them.</span></h1>
+    <p class="hero-sub">Pilot Projects embeds a hands-on operating team inside growing companies — owning the systems, hiring, and day-to-day execution that turn momentum into a machine. <b>And we build ventures of our own.</b></p>
+    <div class="hero-cta">
+      <a href="#work" class="btn btn-lg">Work with us</a>
+      <a href="#ventures" class="btn btn-ghost btn-lg nav-cta-ghost">Pitch a venture →</a>
+    </div>
+  </div>
+  <div class="wrap">
+    <div class="strip">
+      <span class="lbl mono">Introduced through teams like</span>
+      <div class="names">
+        <span>Angel Squad</span>
+        <span>QED Investors</span>
+        <span>Women on Boards</span>
+        <span>Osiris</span>
+        <span>CrewGrab</span>
+        <span>On Deck</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INSIGHT -->
+<section class="insight">
+  <div class="wrap">
+    <div class="k mono reveal">Why we exist</div>
+    <p class="reveal">Growth breaks the operating system. <span class="dim">Most teams paper over it with another tool, or another consultant's deck. We step in and run it.</span></p>
+  </div>
+</section>
+
+<!-- WHAT WE DO -->
+<section class="sec" id="what">
+  <div class="wrap">
+    <div class="sec-label mono reveal"><span class="num">01</span><span>What we do</span></div>
+    <div class="lanes reveal">
+      <div class="lane">
+        <div class="tag mono">Operations</div>
+        <span class="status">By referral</span>
+        <h3>We run your engine room</h3>
+        <p>We embed alongside your team and take ownership of the operational work that's holding growth back — not a strategy deck, the actual running of it.</p>
+        <a href="#work" class="go">See how to start <span class="ar">→</span></a>
+      </div>
+      <div class="lane">
+        <div class="tag mono">Ventures</div>
+        <span class="status">Open to pitches</span>
+        <h3>We build our own</h3>
+        <p>We start and back companies on the same workbench — and partner with founders who want operators in the room from day one, not just a cheque.</p>
+        <a href="#ventures" class="go">Pitch a venture <span class="ar">→</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CAPABILITIES -->
+<section class="sec" id="capabilities">
+  <div class="wrap">
+    <div class="sec-label mono reveal"><span class="num">02</span><span>Capabilities</span></div>
+    <div class="cap-intro reveal">
+      <h2>The work we<br>actually own.</h2>
+      <p>Not advice you have to go implement. We staff operators who've run this before and hand back working systems, your team trained on them.</p>
+    </div>
+    <div class="caps reveal">
+      <div class="cap"><div class="ci">01</div><h4>Revenue &amp; GTM operations</h4><p>Pipeline, CRM, reporting and the go-to-market motion — built to run without heroics.</p></div>
+      <div class="cap"><div class="ci">02</div><h4>Finance &amp; reporting</h4><p>Models, board packs, cash discipline and fundraising readiness that stands up to scrutiny.</p></div>
+      <div class="cap"><div class="ci">03</div><h4>Hiring &amp; team building</h4><p>Org design, recruiting and onboarding — so the right people land and ramp fast.</p></div>
+      <div class="cap"><div class="ci">04</div><h4>Systems &amp; automation</h4><p>The tooling stack and the workflows that connect it, so work moves without friction.</p></div>
+      <div class="cap"><div class="ci">05</div><h4>Programs &amp; delivery</h4><p>We run the cross-team projects that keep slipping — owned end to end, shipped on time.</p></div>
+      <div class="cap"><div class="ci">06</div><h4>Founder leverage</h4><p>We take the operational weight off the founder's desk so they can do the few things only they can.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW TO START -->
+<section class="sec" id="work">
+  <div class="wrap">
+    <div class="sec-label mono reveal"><span class="num">03</span><span>How to start</span></div>
+    <div class="paths">
+      <div class="path reveal">
+        <div class="ph"><span class="pn">Path A</span><h3>Operations — by referral</h3></div>
+        <p class="pdesc">We take on a small number of operating partners at a time, and we've found the best ones come <b>warmly introduced</b> by people we already work with. If you know someone inside one of these teams, ask them for an intro — that's the front door.</p>
+        <div class="gw-label mono">Ask for an introduction through</div>
+        <a class="gw" href="https://www.hustlefund.vc/squad" target="_blank" rel="noopener"><span class="gw-name">Angel Squad</span><span class="meta">hustlefund.vc ↗</span></a>
+        <a class="gw" href="https://www.qedinvestors.com/" target="_blank" rel="noopener"><span class="gw-name">QED Investors</span><span class="meta">qedinvestors.com ↗</span></a>
+        <a class="gw" href="https://www.wobproject.com/" target="_blank" rel="noopener"><span class="gw-name">Women on Boards Project</span><span class="meta">wobproject.com ↗</span></a>
+        <a class="gw" href="https://ocs.world/" target="_blank" rel="noopener"><span class="gw-name">Osiris International Group</span><span class="meta">ocs.world ↗</span></a>
+        <a class="gw" href="https://www.crewgrab.com/" target="_blank" rel="noopener"><span class="gw-name">CrewGrab</span><span class="meta">crewgrab.com ↗</span></a>
+        <a class="gw" href="https://joinodf.com/" target="_blank" rel="noopener"><span class="gw-name">On Deck</span><span class="meta">joinodf.com ↗</span></a>
+        <p class="gw-foot">Not sure who to ask? <b>Pitch a venture</b> on the right, or mention a mutual connection — we'll find the line.</p>
+      </div>
+      <div class="path reveal" id="ventures">
+        <div class="ph"><span class="pn">Path B</span><h3>Ventures — pitch us directly</h3></div>
+        <p class="pdesc">Building something and want operators in the room? Tell us what you're making and what you need. <b>We reply within 48 hours.</b></p>
+        <form id="pitch">
+          <div class="row2">
+            <div class="field"><label>Your name</label><input required name="name" autocomplete="name"></div>
+            <div class="field"><label>Email</label><input required type="email" name="email" autocomplete="email"></div>
+          </div>
+          <div class="field"><label>What are you building?</label><textarea required name="building"></textarea></div>
+          <div class="row2">
+            <div class="field"><label>Stage</label><select required><option value="" disabled selected>Select —</option><option>Idea / pre-product</option><option>Building / pre-revenue</option><option>Revenue / scaling</option><option>Spinout / carve-out</option></select></div>
+            <div class="field"><label>What do you need?</label><select required><option value="" disabled selected>Select —</option><option>Co-build partner</option><option>Operators on-demand</option><option>Equity / capital</option><option>Something else</option></select></div>
+          </div>
+          <button class="btn" type="submit">Send pitch →</button>
+        </form>
+        <div class="sent" id="sent">
+          <div class="mono" style="color:var(--acc)">● Received</div>
+          <h3>We've got it.</h3>
+          <p>We'll reply within 48 hours — usually faster, occasionally from a strange time zone.</p>
+          <div class="ref mono">REF · PP-V-0000</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GLOBAL -->
+<section class="sec global" id="global">
+  <div class="wrap">
+    <div class="gl-top reveal">
+      <h2>Someone is always<br>awake to run it. <em></em></h2>
+      <p class="gl-sub">Eight stations across four continents and seven time zones — so the work never waits for morning.</p>
+    </div>
+    <div class="clocks reveal" id="clocks"></div>
+  </div>
+</section>
+
+<!-- CLOSER -->
+<section class="closer">
+  <div class="wrap">
+    <h2 class="reveal">Ready to hand off the hard part?</h2>
+    <p class="reveal">Start with a warm intro, or pitch us a venture. Either way, you'll be talking to operators — not a sales team.</p>
+    <div class="hero-cta reveal">
+      <a href="#work" class="btn btn-lg">Get an introduction</a>
+      <a href="#ventures" class="btn btn-ghost btn-lg">Pitch a venture →</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-top">
+      <div>
+        <img src="../assets/logo-ink.png" alt="Pilot Projects" style="height:58px;width:auto;display:block">
+        <div class="foot-tag">Operators and venture builders, running the engine room of growing companies.</div>
+      </div>
+      <div class="foot-nav">
+        <div class="foot-col">
+          <h5>Company</h5>
+          <a href="#what">What we do</a>
+          <a href="#capabilities">Capabilities</a>
+          <a href="#global">Global</a>
+        </div>
+        <div class="foot-col">
+          <h5>Start</h5>
+          <a href="#work">Get an intro</a>
+          <a href="#ventures">Pitch a venture</a>
+        </div>
+      </div>
+    </div>
+    <div class="foot-bottom mono">
+      <span>© Pilot Projects Group · MMXXVI</span>
+      <span>Bangkok · Dubai · Mauritius · Cape Town · London · Miami · Chicago · Denver</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const hdr=document.getElementById('hdr');
+  addEventListener('scroll',()=>hdr.classList.toggle('solid',scrollY>30),{passive:true});
+
+  const io=new IntersectionObserver((es)=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:0.12});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+  document.getElementById('pitch').addEventListener('submit',e=>{e.preventDefault();e.target.style.display='none';document.getElementById('sent').classList.add('show')});
+
+  // live clocks
+  const cities=[
+    {c:"London",tz:"Europe/London"},
+    {c:"Cape Town",tz:"Africa/Johannesburg"},
+    {c:"Dubai",tz:"Asia/Dubai"},
+    {c:"Mauritius",tz:"Indian/Mauritius"},
+    {c:"Bangkok",tz:"Asia/Bangkok"},
+    {c:"Denver",tz:"America/Denver"},
+    {c:"Chicago",tz:"America/Chicago"},
+    {c:"Miami",tz:"America/New_York"},
+  ];
+  const wrap=document.getElementById('clocks');
+  wrap.innerHTML=cities.map((x,i)=>`<div class="clock"><div class="city">${x.c}</div><div class="tz">${x.tz.split('/')[0]}</div><div class="time" data-tz="${x.tz}">—</div></div>`).join('');
+  function tick(){
+    document.querySelectorAll('.time[data-tz]').forEach(el=>{
+      const parts=new Intl.DateTimeFormat('en-US',{timeZone:el.dataset.tz,hour:'2-digit',minute:'2-digit',hour12:true}).formatToParts(new Date());
+      const h=parts.find(p=>p.type==='hour').value, m=parts.find(p=>p.type==='minute').value, a=parts.find(p=>p.type==='dayPeriod').value;
+      el.innerHTML=`${h}:${m}<span class="ampm">${a}</span>`;
+    });
+  }
+  tick();setInterval(tick,1000*20);
+</script>
+</body>
+</html>
