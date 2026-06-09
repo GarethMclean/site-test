@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pilot Projects — Console</title>
+<link rel="icon" type="image/png" href="../assets/mark-white.png">
+<style>
+  :root{
+    --bg:#0b0b0c;
+    --bg-2:#0f0f11;
+    --ink:#f2f1ec;
+    --ink-dim:#9a9a93;
+    --ink-faint:#6a6a64;
+    --line:rgba(242,241,236,0.10);
+    --line-2:rgba(242,241,236,0.06);
+    --acc:oklch(0.83 0.15 158);
+    --acc-dim:oklch(0.62 0.11 158);
+    --sans:"Helvetica Neue",Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,"SF Mono","Menlo","Roboto Mono",monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:var(--sans);
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+    line-height:1.5;
+    overflow-x:hidden;
+  }
+  ::selection{background:var(--acc);color:#0b0b0c}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1240px;margin:0 auto;padding:0 32px}
+  .mono{font-family:var(--mono);font-size:12px;letter-spacing:0.08em;text-transform:uppercase}
+
+  /* ---------- top bar ---------- */
+  header{position:fixed;top:0;left:0;right:0;z-index:50;
+    background:rgba(11,11,12,0.72);backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--line-2);transition:border-color .3s}
+  .bar{display:flex;align-items:center;justify-content:space-between;height:68px}
+  .brand{display:flex;align-items:center;gap:11px;font-weight:700;letter-spacing:-0.01em;font-size:17px}
+  .brand img{height:24px;width:auto;display:block}
+  .brand .dot{width:7px;height:7px;border-radius:50%;background:var(--acc);
+    box-shadow:0 0 0 0 var(--acc);animation:pulse 2.6s infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 oklch(0.83 0.15 158 / .5)}70%{box-shadow:0 0 0 7px transparent}100%{box-shadow:0 0 0 0 transparent}}
+  nav.links{display:flex;align-items:center;gap:30px}
+  nav.links a{font-size:14px;color:var(--ink-dim);transition:color .2s}
+  nav.links a:hover{color:var(--ink)}
+  .btn{display:inline-flex;align-items:center;gap:9px;font-size:14px;font-weight:600;
+    padding:10px 18px;border-radius:999px;border:1px solid var(--line);
+    transition:all .2s;white-space:nowrap}
+  .btn:hover{border-color:var(--acc);color:var(--acc)}
+  .btn-solid{background:var(--acc);color:#07140c;border-color:var(--acc)}
+  .btn-solid:hover{background:transparent;color:var(--acc)}
+  .nav-cta{display:flex;align-items:center;gap:14px}
+  .menu-btn{display:none;background:none;border:none;color:var(--ink);cursor:pointer;font-family:var(--mono);font-size:12px}
+
+  /* ---------- hero ---------- */
+  .hero{padding:150px 0 84px;position:relative}
+  .hero-grid{position:absolute;inset:0;pointer-events:none;
+    background-image:linear-gradient(var(--line-2) 1px,transparent 1px),linear-gradient(90deg,var(--line-2) 1px,transparent 1px);
+    background-size:64px 64px;mask-image:radial-gradient(ellipse 80% 60% at 50% 30%,#000 0%,transparent 75%)}
+  .eyebrow{display:flex;gap:18px;flex-wrap:wrap;color:var(--ink-faint);margin-bottom:38px}
+  .eyebrow .on{color:var(--acc)}
+  h1.display{font-size:clamp(48px,8.5vw,118px);line-height:0.94;letter-spacing:-0.04em;font-weight:700;max-width:14ch}
+  h1.display em{font-style:normal;color:var(--ink-faint);display:block}
+  .hero-sub{margin-top:34px;font-size:clamp(17px,2vw,21px);color:var(--ink-dim);max-width:50ch;line-height:1.5}
+  .hero-sub b{color:var(--ink);font-weight:500}
+  .hero-cta{margin-top:44px;display:flex;gap:14px;flex-wrap:wrap}
+  .hero-cta .btn{padding:14px 26px;font-size:15px}
+
+  /* ticker */
+  .ticker{margin-top:74px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+    overflow:hidden;white-space:nowrap;position:relative}
+  .ticker-track{display:inline-flex;gap:0;animation:scroll 38s linear infinite}
+  .ticker-track span{padding:15px 0;color:var(--ink-faint);font-family:var(--mono);font-size:12px;letter-spacing:0.1em}
+  .ticker-track span::after{content:"·";margin:0 26px;color:var(--acc-dim)}
+  @keyframes scroll{to{transform:translateX(-50%)}}
+
+  /* ---------- section frame ---------- */
+  section{position:relative}
+  .sec-pad{padding:96px 0}
+  .sec-head{display:flex;align-items:baseline;gap:16px;margin-bottom:14px;color:var(--ink-faint)}
+  .sec-head .num{color:var(--acc)}
+  h2{font-size:clamp(34px,5.2vw,62px);line-height:1.0;letter-spacing:-0.03em;font-weight:700}
+  h2 em{font-style:normal;color:var(--ink-faint)}
+
+  /* what we do */
+  .lede{font-size:clamp(22px,3vw,34px);line-height:1.32;letter-spacing:-0.02em;max-width:24ch;font-weight:500}
+  .lede .acc{color:var(--acc)}
+  .cap-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);
+    border:1px solid var(--line);margin-top:64px}
+  .cap{background:var(--bg);padding:34px 30px 40px;min-height:230px;display:flex;flex-direction:column;transition:background .25s}
+  .cap:hover{background:var(--bg-2)}
+  .cap .k{color:var(--acc);margin-bottom:auto}
+  .cap h3{font-size:22px;font-weight:600;letter-spacing:-0.01em;margin:38px 0 10px}
+  .cap p{color:var(--ink-dim);font-size:15px;line-height:1.55}
+
+  /* operations / referral */
+  .split{display:grid;grid-template-columns:0.9fr 1.1fr;gap:72px;align-items:start}
+  .op-copy p{color:var(--ink-dim);font-size:17px;line-height:1.6;margin-top:22px;max-width:38ch}
+  .op-copy p b{color:var(--ink);font-weight:500}
+  .op-copy h2 em{color:var(--acc)}
+  .gateways{border-top:1px solid var(--line)}
+  .gw-label{color:var(--ink-faint);padding:0 0 18px}
+  .gw{display:flex;align-items:center;justify-content:space-between;gap:20px;
+    padding:22px 4px;border-bottom:1px solid var(--line);transition:padding .25s,background .25s;cursor:pointer}
+  .gw:hover{padding-left:16px;padding-right:16px;background:var(--bg-2)}
+  .gw-name{font-size:21px;font-weight:500;letter-spacing:-0.01em}
+  .gw-meta{color:var(--ink-faint);font-size:13px;flex:1;font-family:var(--mono);text-align:right;padding-right:8px}
+  .gw .arrow{color:var(--ink-faint);transition:transform .25s,color .25s}
+  .gw:hover .arrow{color:var(--acc);transform:translate(3px,-3px)}
+  .gw-foot{color:var(--ink-dim);font-size:15px;margin-top:26px;line-height:1.6}
+  .gw-foot b{color:var(--ink)}
+
+  /* ventures / form */
+  .ventures{background:var(--bg-2);border-top:1px solid var(--line)}
+  .v-grid{display:grid;grid-template-columns:0.85fr 1.15fr;gap:72px;align-items:start}
+  .v-copy h2 em{color:var(--acc)}
+  .v-copy p{color:var(--ink-dim);font-size:17px;line-height:1.6;margin-top:22px;max-width:34ch}
+  form{display:grid;gap:22px}
+  .field{display:grid;gap:9px}
+  .field label{font-family:var(--mono);font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink-faint)}
+  .field input,.field textarea,.field select{
+    background:transparent;border:none;border-bottom:1px solid var(--line);
+    color:var(--ink);font-family:var(--sans);font-size:17px;padding:10px 2px;transition:border-color .2s}
+  .field textarea{resize:vertical;min-height:54px;line-height:1.5}
+  .field input:focus,.field textarea:focus,.field select:focus{outline:none;border-color:var(--acc)}
+  .field select{cursor:pointer;-webkit-appearance:none;appearance:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236a6a64' fill='none' stroke-width='1.4'/%3E%3C/svg%3E");
+    background-repeat:no-repeat;background-position:right 2px center}
+  .field select option{background:#141416;color:var(--ink)}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+  form .btn-solid{justify-content:center;padding:16px;font-size:15px;margin-top:8px;border-radius:10px}
+  .sent{display:none;border:1px solid var(--acc);border-radius:12px;padding:34px;text-align:left}
+  .sent.show{display:block;animation:fade .5s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .sent .s-dot{color:var(--acc)}
+  .sent h3{font-size:24px;font-weight:600;margin:14px 0 8px;letter-spacing:-0.01em}
+  .sent h3 em{font-style:normal;color:var(--acc)}
+  .sent p{color:var(--ink-dim);font-size:15px}
+  .sent .ref{margin-top:20px;color:var(--ink-faint)}
+
+  /* footer */
+  footer{border-top:1px solid var(--line);padding:64px 0 40px}
+  .foot-top{display:flex;justify-content:space-between;align-items:flex-start;gap:40px;flex-wrap:wrap}
+  .foot-brand{font-size:22px;font-weight:700;letter-spacing:-0.01em}
+  .foot-tag{color:var(--ink-dim);font-size:15px;margin-top:10px;max-width:30ch;line-height:1.55}
+  .foot-cities{color:var(--ink-faint);font-family:var(--mono);font-size:11.5px;letter-spacing:0.08em;line-height:2;max-width:30ch}
+  .foot-bottom{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;
+    margin-top:56px;padding-top:24px;border-top:1px solid var(--line-2);color:var(--ink-faint)}
+
+  /* reveal */
+  .reveal{opacity:0;transform:translateY(22px);transition:opacity .7s cubic-bezier(.2,.7,.2,1),transform .7s cubic-bezier(.2,.7,.2,1)}
+  .reveal.in{opacity:1;transform:none}
+
+  @media(max-width:860px){
+    .wrap{padding:0 22px}
+    nav.links{display:none}
+    .menu-btn{display:block}
+    .hero{padding:120px 0 60px}
+    .cap-grid{grid-template-columns:1fr}
+    .split,.v-grid{grid-template-columns:1fr;gap:44px}
+    .sec-pad{padding:72px 0}
+    .gw-meta{display:none}
+    .row2{grid-template-columns:1fr}
+    .nav-cta .btn:not(.btn-solid){display:none}
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap bar">
+    <a href="#top" class="brand"><img src="../assets/mark-white.png" alt="Pilot Projects">Pilot Projects</a>
+    <nav class="links">
+      <a href="#do">What we do</a>
+      <a href="#ops">Operations</a>
+      <a href="#ventures">Ventures</a>
+    </nav>
+    <div class="nav-cta">
+      <a href="#ops" class="btn">Get an intro</a>
+      <a href="#ventures" class="btn btn-solid">Pitch a venture →</a>
+    </div>
+  </div>
+</header>
+
+<a id="top"></a>
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="wrap">
+    <div class="eyebrow mono">
+      <span>PP / 2026 / Q2</span>
+      <span>Operations <span class="on">·</span> Ventures</span>
+      <span><span class="on">●</span> Building</span>
+    </div>
+    <h1 class="display">Operators and venture builders.</h1>
+    <p class="hero-sub">A firm built across seven time zones, running the <b>engine room</b> of growing companies — and building our own ventures on the same workbench.</p>
+    <div class="hero-cta">
+      <a href="#ops" class="btn btn-solid">Get an intro</a>
+      <a href="#ventures" class="btn">Pitch a venture →</a>
+    </div>
+  </div>
+  <div class="ticker">
+    <div class="ticker-track" id="ticker"></div>
+  </div>
+</section>
+
+<!-- WHAT WE DO -->
+<section class="sec-pad" id="do">
+  <div class="wrap">
+    <div class="sec-head mono reveal"><span class="num">01</span><span>What we do</span></div>
+    <h2 class="lede reveal">We embed as a <span class="acc">hands-on second team</span> and run the work that makes companies actually move.</h2>
+    <div class="cap-grid reveal">
+      <div class="cap">
+        <div class="k mono">A</div>
+        <h3>Operations</h3>
+        <p>The unglamorous engine room — process, systems, and the day-to-day execution that keeps a growing company running clean.</p>
+      </div>
+      <div class="cap">
+        <div class="k mono">B</div>
+        <h3>Execution</h3>
+        <p>We take ownership, not slideware. Briefs become shipped work — staffed by operators who've run it before, on your clock and ours.</p>
+      </div>
+      <div class="cap">
+        <div class="k mono">C</div>
+        <h3>Ventures</h3>
+        <p>We build our own companies on the same workbench — and partner with founders who want operators in the room from day one.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- OPERATIONS / REFERRAL -->
+<section class="sec-pad" id="ops">
+  <div class="wrap split">
+    <div class="op-copy reveal">
+      <div class="sec-head mono"><span class="num">02</span><span>Operations</span></div>
+      <h2>By <em>referral.</em></h2>
+      <p>We've found our best partners through <b>warm referrals</b> from the companies we already work with.</p>
+      <p>If you'd like to engage us, the way in is through someone you know inside one of our gateway clients. Ask them to make the intro.</p>
+    </div>
+    <div class="gateways reveal">
+      <div class="gw-label mono">Gateways · ask one of these</div>
+      <a class="gw" href="https://www.hustlefund.vc/squad" target="_blank" rel="noopener"><span class="gw-name">Angel Squad</span><span class="gw-meta">hustlefund.vc</span><span class="arrow">↗</span></a>
+      <a class="gw" href="https://www.qedinvestors.com/" target="_blank" rel="noopener"><span class="gw-name">QED Investors</span><span class="gw-meta">qedinvestors.com</span><span class="arrow">↗</span></a>
+      <a class="gw" href="https://www.wobproject.com/" target="_blank" rel="noopener"><span class="gw-name">Women on Boards Project</span><span class="gw-meta">wobproject.com</span><span class="arrow">↗</span></a>
+      <a class="gw" href="https://ocs.world/" target="_blank" rel="noopener"><span class="gw-name">Osiris International Group</span><span class="gw-meta">ocs.world</span><span class="arrow">↗</span></a>
+      <a class="gw" href="https://www.crewgrab.com/" target="_blank" rel="noopener"><span class="gw-name">CrewGrab</span><span class="gw-meta">crewgrab.com</span><span class="arrow">↗</span></a>
+      <a class="gw" href="https://joinodf.com/" target="_blank" rel="noopener"><span class="gw-name">On Deck</span><span class="gw-meta">joinodf.com</span><span class="arrow">↗</span></a>
+      <p class="gw-foot">Know an operator inside one of the above? <b>Ask them to make the intro</b> — that's the whole front door.</p>
+    </div>
+  </div>
+</section>
+
+<!-- VENTURES -->
+<section class="ventures sec-pad" id="ventures">
+  <div class="wrap v-grid">
+    <div class="v-copy reveal">
+      <div class="sec-head mono"><span class="num">03</span><span>Ventures</span></div>
+      <h2>Send a <em>pitch.</em></h2>
+      <p>The ventures practice is open. If you're building something and want operators in the room — equity partners, co-builders, or a hands-on second team — tell us about it.</p>
+      <p style="color:var(--ink-faint);font-size:14px;margin-top:30px">We reply within 48 hours — usually faster, occasionally from a strange time zone.</p>
+    </div>
+    <div class="reveal">
+      <form id="pitch">
+        <div class="row2">
+          <div class="field"><label>Your name</label><input required name="name" autocomplete="name"></div>
+          <div class="field"><label>Email</label><input required type="email" name="email" autocomplete="email"></div>
+        </div>
+        <div class="field"><label>What are you building?</label><textarea required name="building"></textarea></div>
+        <div class="row2">
+          <div class="field"><label>Stage</label>
+            <select required name="stage"><option value="" disabled selected>Select —</option><option>Idea / pre-product</option><option>Building / pre-revenue</option><option>Revenue / scaling</option><option>Spinout / carve-out</option></select>
+          </div>
+          <div class="field"><label>What do you need?</label>
+            <select required name="need"><option value="" disabled selected>Select —</option><option>Co-build partner</option><option>Operators on-demand</option><option>Equity / capital intro</option><option>Something else</option></select>
+          </div>
+        </div>
+        <button class="btn btn-solid" type="submit">Transmit pitch →</button>
+      </form>
+      <div class="sent" id="sent">
+        <div class="s-dot mono">● Transmission received</div>
+        <h3>We've got it. <em>Reply within 48 hours.</em></h3>
+        <p>Usually faster — occasionally from a strange time zone.</p>
+        <div class="ref mono">REF · PP-V-0000</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-top">
+      <div>
+        <img src="../assets/logo-white.png" alt="Pilot Projects" style="height:62px;width:auto;display:block;margin-bottom:18px">
+        <div class="foot-tag">Operators and venture builders, running the engine room of growing companies.</div>
+      </div>
+      <div class="foot-cities">Bangkok · Dubai · Mauritius · Cape Town · London · Miami · Chicago · Denver</div>
+    </div>
+    <div class="foot-bottom mono">
+      <span>© Pilot Projects Group · MMXXVI</span>
+      <span>08 stations · 4 continents</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // ticker
+  const cities=["Bangkok","Dubai","Mauritius","Cape Town","London","Miami","Chicago","Denver"];
+  const seq=[...cities,...cities,...cities,...cities];
+  document.getElementById('ticker').innerHTML=seq.map(c=>`<span>${c}</span>`).join('');
+
+  // reveal on scroll
+  const io=new IntersectionObserver((es)=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:0.14});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+  // header border on scroll
+  addEventListener('scroll',()=>{document.querySelector('header').style.borderBottomColor=scrollY>20?'var(--line)':'var(--line-2)'});
+
+  // form
+  document.getElementById('pitch').addEventListener('submit',e=>{
+    e.preventDefault();
+    document.getElementById('pitch').style.display='none';
+    document.getElementById('sent').classList.add('show');
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pilot Projects — Website Directions</title>
+<link rel="icon" type="image/png" href="assets/mark-ink.png">
+<style>
+  :root{
+    --bg:#f1ede4;--paper:#f8f5ee;--ink:#14140e;--ink-2:#56524a;--ink-3:#8b867a;
+    --line:#d6d0c3;--line-2:#e4dfd2;--acc:oklch(0.46 0.10 152);
+    --sans:"Helvetica Neue",Helvetica,Arial,sans-serif;--mono:ui-monospace,"SF Mono","Menlo",monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;line-height:1.5}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1200px;margin:0 auto;padding:0 40px}
+  .mono{font-family:var(--mono);font-size:11.5px;letter-spacing:.13em;text-transform:uppercase}
+  header{padding:80px 0 0}
+  .brand{display:flex;align-items:center;gap:13px;font-weight:700;font-size:17px;letter-spacing:-0.01em;margin-bottom:64px}
+  .brand img{height:24px;width:auto}
+  .lede .k{color:var(--acc);margin-bottom:22px}
+  h1{font-size:clamp(36px,5.2vw,60px);line-height:1.02;letter-spacing:-0.035em;font-weight:700;max-width:18ch}
+  .intro{margin-top:26px;font-size:19px;color:var(--ink-2);max-width:62ch;line-height:1.55}
+  .intro b{color:var(--ink);font-weight:500}
+  .note{margin-top:30px;border-left:2px solid var(--acc);padding:4px 0 4px 20px;color:var(--ink-2);font-size:15px;max-width:58ch;line-height:1.55}
+  .note b{color:var(--ink);font-weight:600}
+
+  .grid{margin:72px 0 40px;display:grid;gap:28px}
+  .card{display:grid;grid-template-columns:300px 1fr;gap:0;border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--paper);transition:transform .25s,box-shadow .25s,border-color .25s}
+  .card:hover{transform:translateY(-3px);box-shadow:0 18px 50px -28px rgba(20,20,14,0.35);border-color:var(--ink)}
+  .thumb{position:relative;border-right:1px solid var(--line);min-height:230px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+  .t-console{background:#0b0b0c;color:#f2f1ec}
+  .t-operators{background:#f1ede4;color:#14140e}
+  .t-atlas{background:#0a0e12;color:#eef1ee}
+  .thumb .mk{width:46px;height:46px;opacity:.9}
+  .thumb .tnum{position:absolute;top:16px;left:18px;font-family:var(--mono);font-size:11px;letter-spacing:.12em;opacity:.6}
+  .thumb .swatch{position:absolute;bottom:16px;left:18px;display:flex;gap:7px}
+  .thumb .swatch i{width:16px;height:16px;border-radius:50%;display:block;border:1px solid rgba(128,128,128,.25)}
+  .body{padding:32px 34px;display:flex;flex-direction:column}
+  .body .nm{display:flex;align-items:baseline;gap:12px;margin-bottom:8px}
+  .body h2{font-size:27px;font-weight:600;letter-spacing:-0.02em}
+  .body .rec{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--acc);border:1px solid var(--acc);border-radius:999px;padding:3px 9px}
+  .body .desc{color:var(--ink-2);font-size:15.5px;line-height:1.55;max-width:52ch}
+  .body .meta{display:flex;gap:24px;flex-wrap:wrap;margin-top:18px;color:var(--ink-3);font-size:13px}
+  .body .meta b{color:var(--ink);font-weight:500}
+  .body .open{margin-top:22px;display:inline-flex;align-items:center;gap:9px;font-weight:600;font-size:15px;align-self:flex-start;border-bottom:1.5px solid var(--ink);padding-bottom:3px;transition:gap .2s}
+  .card:hover .open{gap:14px}
+
+  .foot{padding:30px 0 80px;color:var(--ink-3);font-size:14px;line-height:1.6;border-top:1px solid var(--line);margin-top:20px}
+  .foot b{color:var(--ink-2)}
+  @media(max-width:760px){
+    .wrap{padding:0 22px}
+    .card{grid-template-columns:1fr}
+    .thumb{border-right:none;border-bottom:1px solid var(--line);min-height:170px}
+    header{padding:48px 0 0}
+    .brand{margin-bottom:40px}
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="brand"><img src="assets/mark-ink.png" alt="Pilot Projects">Pilot Projects</div>
+    <div class="lede">
+      <div class="k mono">Website redesign · 3 directions</div>
+      <h1>Three ways to introduce Pilot Projects.</h1>
+      <p class="intro">All three are full, working, mobile-responsive landing pages built around the same strategy: lead with <b>what you do</b> and the <b>"operators, not advisors"</b> wedge, use the referral model as a trust signal, and make the two ways in — <b>intro</b> or <b>venture pitch</b> — impossible to miss. The copy is fully rewritten to convert a cold prospect, not just describe the firm.</p>
+      <p class="note"><b>Pick a direction</b> (or mix elements across them) and I'll take it to a single polished site, wire the form to your inbox, and prep it for launch. Your real logo is already in all three.</p>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <div class="grid">
+
+    <a class="card" href="directions/Operators.html">
+      <div class="thumb t-operators">
+        <span class="tnum">DIR 01</span>
+        <img class="mk" src="assets/mark-ink.png" alt="">
+        <span class="swatch"><i style="background:#f1ede4"></i><i style="background:#14140e"></i><i style="background:oklch(0.46 0.10 152)"></i></span>
+      </div>
+      <div class="body">
+        <div class="nm"><h2>Operators</h2><span class="rec">My recommendation</span></div>
+        <p class="desc">Light, bold and editorial. Leads with the differentiator — “We don't advise companies. We operate them.” — then makes the work concrete with a capabilities grid so no one is left wondering what you actually do. Clearest, most premium, most versatile for sending cold to any audience.</p>
+        <div class="meta"><span><b>Mood</b> Light · confident · editorial</span><span><b>Best for</b> Sending to prospects</span></div>
+        <span class="open">Open Operators →</span>
+      </div>
+    </a>
+
+    <a class="card" href="directions/Atlas.html">
+      <div class="thumb t-atlas">
+        <span class="tnum">DIR 02</span>
+        <img class="mk" src="assets/mark-white.png" alt="">
+        <span class="swatch"><i style="background:#0a0e12"></i><i style="background:#eef1ee"></i><i style="background:oklch(0.80 0.10 156)"></i></span>
+      </div>
+      <div class="body">
+        <div class="nm"><h2>Atlas</h2></div>
+        <p class="desc">The “cool” one, kept disciplined. A real interactive world map of your eight cities with live local times is the hero — framed as proof you're <em>always-on</em>, not as a vanity flex. Same sharp messaging and conversion paths underneath. Memorable and distinctive.</p>
+        <div class="meta"><span><b>Mood</b> Dark · global · alive</span><span><b>Best for</b> Standing out / wow factor</span></div>
+        <span class="open">Open Atlas →</span>
+      </div>
+    </a>
+
+    <a class="card" href="directions/Console.html">
+      <div class="thumb t-console">
+        <span class="tnum">DIR 03</span>
+        <img class="mk" src="assets/mark-white.png" alt="">
+        <span class="swatch"><i style="background:#0b0b0c"></i><i style="background:#f2f1ec"></i><i style="background:oklch(0.83 0.15 158)"></i></span>
+      </div>
+      <div class="body">
+        <div class="nm"><h2>Console</h2></div>
+        <p class="desc">Your founder's “control-room” DNA, elevated to immaculate — near-black with a signal-green accent, a city ticker and ops-console details. Keeps the personality of the original site but makes it sleek and mobile-first. The most on-brand to the current feel.</p>
+        <div class="meta"><span><b>Mood</b> Dark · technical · ops-room</span><span><b>Best for</b> Keeping current DNA</span></div>
+        <span class="open">Open Console →</span>
+      </div>
+    </a>
+
+  </div>
+
+  <div class="foot">
+    <b>Note on copy:</b> headlines, capabilities and section structure are my proposed rewrite — adjust anything that's off, and tell me if there are real services, case studies or client names you'd like to feature. <b>Note on the form:</b> the venture-pitch form is a working demo; I'll connect it to your email or a tool of your choice on the final build.
+  </div>
+</main>
+</body>
+</html>
