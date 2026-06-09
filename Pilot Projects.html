@@ -3,17 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pilot Projects — We don't advise companies. We operate them.</title>
-<meta name="description" content="Pilot Projects embeds a hands-on operating team inside growing companies — owning the systems, hiring and execution that turn momentum into a machine. And we build ventures of our own.">
+<title>Pilot Projects — We don't pitch decks. We build the product.</title>
+<meta name="description" content="Pilot Projects is a fully managed build team — product, engineering and QA — that takes founders from discovery to a live product. And we build ventures of our own.">
 <link rel="icon" type="image/png" href="assets/mark-ink.png">
-<template id="__bundler_thumbnail" data-bg-color="#f1ede4">
-  <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
-    <rect width="1200" height="800" fill="#f1ede4"/>
-    <circle cx="600" cy="330" r="40" fill="oklch(0.46 0.10 152)"/>
-    <text x="600" y="470" font-family="Helvetica,Arial,sans-serif" font-size="84" font-weight="700" fill="#14140e" text-anchor="middle" letter-spacing="-3">Pilot Projects</text>
-    <text x="600" y="540" font-family="ui-monospace,monospace" font-size="26" fill="#8b867a" text-anchor="middle" letter-spacing="6">OPERATIONS &amp; VENTURES</text>
-  </svg>
-</template>
 <style>
   :root{
     --bg:#f1ede4;
@@ -25,9 +17,9 @@
     --line-2:#e4dfd2;
     --acc:oklch(0.46 0.10 152);
     --acc-soft:oklch(0.46 0.10 152 / 0.10);
+    --acc-mid:oklch(0.46 0.10 152 / 0.06);
     --sans:"Helvetica Neue",Helvetica,Arial,sans-serif;
     --mono:ui-monospace,"SF Mono","Menlo","Roboto Mono",monospace;
-    /* dark band tokens */
     --d-bg:#0a0e12;
     --d-panel:#0d1217;
     --d-ink:#eef1ee;
@@ -49,7 +41,7 @@
 
   /* header */
   header{position:fixed;inset:0 0 auto 0;z-index:60;border-bottom:1px solid transparent;transition:background .35s,backdrop-filter .35s,border-color .35s}
-  header.solid{background:rgba(241,237,228,0.85);backdrop-filter:blur(16px);border-bottom:1px solid var(--line-2)}
+  header.solid{background:rgba(241,237,228,0.88);backdrop-filter:blur(16px);border-bottom:1px solid var(--line-2)}
   .bar{display:flex;align-items:center;justify-content:space-between;height:80px}
   .brand{display:flex;align-items:center;gap:13px;font-weight:700;letter-spacing:-0.01em;font-size:17px;cursor:pointer}
   .brand img{height:24px;width:auto;display:block}
@@ -77,7 +69,7 @@
   .hero-sub b{color:var(--ink);font-weight:500}
   .hero-cta{margin-top:46px;display:flex;gap:16px;flex-wrap:wrap;align-items:center}
 
-  /* logo strip */
+  /* partner strip */
   .strip{margin-top:86px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:26px 0;
     display:flex;align-items:center;gap:30px;flex-wrap:wrap;justify-content:space-between}
   .strip .lbl{color:var(--ink-3);white-space:nowrap}
@@ -88,7 +80,7 @@
   /* insight band */
   .insight{padding:120px 0}
   .insight .k{color:var(--acc);margin-bottom:34px}
-  .insight p{font-size:clamp(26px,3.7vw,46px);line-height:1.22;letter-spacing:-0.025em;font-weight:500;max-width:20ch}
+  .insight p{font-size:clamp(26px,3.7vw,46px);line-height:1.22;letter-spacing:-0.025em;font-weight:500;max-width:22ch}
   .insight p .dim{color:var(--ink-3)}
 
   /* sections shell */
@@ -121,38 +113,35 @@
   .cap h4{font-size:20px;font-weight:600;letter-spacing:-0.01em;margin:34px 0 9px}
   .cap p{color:var(--ink-2);font-size:14.5px;line-height:1.55}
 
-  /* dark global map band */
-  .global{background:var(--d-bg);color:var(--d-ink);border-top:1px solid var(--ink);position:relative;overflow:hidden}
-  .global .gl-top{display:flex;justify-content:space-between;align-items:flex-end;gap:48px;flex-wrap:wrap;margin-bottom:42px}
-  .global .sec-label{color:var(--d-ink-3)}
-  .global .sec-label .num{color:var(--d-acc)}
-  .global h2{color:var(--d-ink)}
-  .global h2 em{color:rgba(238,241,238,0.38)}
-  .global .gl-sub{color:var(--d-ink-2);font-size:17px;line-height:1.55;max-width:34ch}
+  /* why we ship faster band */
+  .faster{padding:80px 0;background:var(--acc-mid);border-top:1px solid oklch(0.46 0.10 152 / 0.12);border-bottom:1px solid oklch(0.46 0.10 152 / 0.12)}
+  .faster-inner{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center}
+  .faster-left .k{color:var(--acc);margin-bottom:20px}
+  .faster-left h2{font-size:clamp(30px,4vw,52px);line-height:1.06;letter-spacing:-0.03em}
+  .faster-right p{font-size:17px;color:var(--ink-2);line-height:1.65;max-width:44ch}
+  .faster-right p+p{margin-top:18px}
+  .faster-right b{color:var(--ink);font-weight:500}
+  .process-strip{display:flex;align-items:stretch;margin-top:60px;border:1px solid var(--line);background:var(--paper);border-radius:3px;overflow:hidden}
+  .ps{flex:1;padding:20px 22px;display:flex;flex-direction:column;gap:6px;position:relative;border-right:1px solid var(--line)}
+  .ps:last-child{border-right:none}
+  .ps .pn{font-family:var(--mono);font-size:10px;color:var(--acc);letter-spacing:.1em}
+  .ps .pl{font-size:15px;font-weight:600;letter-spacing:-0.01em}
+  .ps .pa{position:absolute;right:-10px;top:50%;transform:translateY(-50%);color:var(--ink-3);font-size:12px;z-index:1;background:var(--paper);padding:0 2px}
 
-  .map-wrap{border:1px solid var(--d-line);border-radius:14px;background:
-    radial-gradient(ellipse 70% 90% at 50% 0%,rgba(120,200,150,0.06),transparent 60%),var(--d-panel);
-    padding:26px 26px 20px;position:relative;overflow:hidden}
-  .map-top{display:flex;justify-content:space-between;align-items:center;gap:20px;margin-bottom:10px;flex-wrap:wrap}
-  .map-top .live{display:flex;align-items:center;gap:9px;color:var(--d-acc)}
-  .map-top .live .d{width:7px;height:7px;border-radius:50%;background:var(--d-acc);animation:pulse2 2s infinite}
-  @keyframes pulse2{0%,100%{opacity:1}50%{opacity:.35}}
-  .map-top .stat{color:var(--d-ink-3);display:flex;gap:22px;flex-wrap:wrap}
-  .map{position:relative;width:100%;aspect-ratio:1000/470}
-  .map svg{position:absolute;inset:0;width:100%;height:100%;display:block}
-  .node{position:absolute;transform:translate(-50%,-50%);z-index:3}
-  .node .ring{position:absolute;left:50%;top:50%;width:9px;height:9px;border-radius:50%;background:var(--d-acc);transform:translate(-50%,-50%)}
-  .node .ring::after{content:"";position:absolute;inset:-3px;border-radius:50%;border:1px solid var(--d-acc);opacity:0;animation:ping 3s ease-out infinite}
-  @keyframes ping{0%{transform:scale(1);opacity:.7}100%{transform:scale(3.4);opacity:0}}
-  .node .lab{position:absolute;left:14px;top:-9px;white-space:nowrap;background:rgba(10,14,18,0.7);backdrop-filter:blur(4px);
-    border:1px solid var(--d-line);border-radius:6px;padding:5px 9px;transition:border-color .2s}
-  .node:hover .lab{border-color:var(--d-acc)}
-  .node .lab .c{display:block;font-size:12.5px;font-weight:500;letter-spacing:-0.01em;line-height:1.25}
-  .node .lab .t{display:block;font-family:var(--mono);font-size:10.5px;color:var(--d-acc);letter-spacing:.04em;margin-top:2px;font-variant-numeric:tabular-nums}
-  .node.flip .lab{left:auto;right:14px;text-align:right}
-  .map-cap{margin-top:14px;color:var(--d-ink-3);font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
+  /* engagement band */
+  .engage{padding:104px 0;border-top:1px solid var(--line)}
+  .engage-intro{margin-bottom:52px}
+  .engage-intro p{color:var(--ink-2);font-size:17px;line-height:1.55;max-width:44ch;margin-top:14px}
+  .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line)}
+  .card{background:var(--bg);padding:36px 32px 40px;display:flex;flex-direction:column;transition:background .25s}
+  .card:hover{background:var(--paper)}
+  .card .cn{font-family:var(--mono);font-size:10.5px;color:var(--acc);letter-spacing:.1em;margin-bottom:auto}
+  .card h4{font-size:21px;font-weight:600;letter-spacing:-0.015em;margin:28px 0 10px}
+  .card p{color:var(--ink-2);font-size:14.5px;line-height:1.55}
+  .card .best{margin-top:22px;font-size:12.5px;color:var(--ink-3);font-family:var(--mono);letter-spacing:.05em;text-transform:uppercase}
+  .card .best span{color:var(--ink-2);font-weight:500;text-transform:none;letter-spacing:0;font-family:var(--sans)}
 
-  /* how to start — paths */
+  /* how to start */
   .paths{display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:start}
   .path .ph{display:flex;align-items:baseline;gap:14px;margin-bottom:18px}
   .path .ph .pn{font-family:var(--mono);font-size:12px;color:var(--acc);letter-spacing:.1em}
@@ -160,7 +149,7 @@
   .path .pdesc{color:var(--ink-2);font-size:16px;line-height:1.6;margin-bottom:28px;max-width:40ch}
   .path .pdesc b{color:var(--ink);font-weight:500}
   .gw-label{color:var(--ink-3);padding-bottom:12px;border-bottom:1.5px solid var(--ink)}
-  .gw{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px 0;border-bottom:1px solid var(--line);transition:padding .25s,background .25s;cursor:pointer}
+  .gw{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px 0;border-bottom:1px solid var(--line);transition:padding .25s;cursor:pointer}
   .gw:hover{padding-left:12px}
   .gw-name{font-size:19px;font-weight:500;letter-spacing:-0.012em}
   .gw .meta{color:var(--ink-3);font-family:var(--mono);font-size:11px;letter-spacing:.05em}
@@ -188,7 +177,37 @@
   .sent p{color:var(--ink-2);font-size:15px;max-width:36ch}
   .sent .ref{margin-top:20px;color:var(--ink-3)}
 
-  /* closing CTA */
+  /* dark global band */
+  .global{background:var(--d-bg);color:var(--d-ink);border-top:1px solid var(--ink);position:relative;overflow:hidden}
+  .global .gl-top{display:flex;justify-content:space-between;align-items:flex-end;gap:48px;flex-wrap:wrap;margin-bottom:42px}
+  .global .sec-label{color:var(--d-ink-3)}
+  .global .sec-label .num{color:var(--d-acc)}
+  .global h2{color:var(--d-ink)}
+  .global h2 em{color:rgba(238,241,238,0.38)}
+  .global .gl-sub{color:var(--d-ink-2);font-size:17px;line-height:1.55;max-width:36ch}
+  .map-wrap{border:1px solid var(--d-line);border-radius:14px;background:
+    radial-gradient(ellipse 70% 90% at 50% 0%,rgba(120,200,150,0.06),transparent 60%),var(--d-panel);
+    padding:26px 26px 20px;position:relative;overflow:hidden}
+  .map-top{display:flex;justify-content:space-between;align-items:center;gap:20px;margin-bottom:10px;flex-wrap:wrap}
+  .map-top .live{display:flex;align-items:center;gap:9px;color:var(--d-acc)}
+  .map-top .live .d{width:7px;height:7px;border-radius:50%;background:var(--d-acc);animation:pulse2 2s infinite}
+  @keyframes pulse2{0%,100%{opacity:1}50%{opacity:.35}}
+  .map-top .stat{color:var(--d-ink-3);display:flex;gap:22px;flex-wrap:wrap}
+  .map{position:relative;width:100%;aspect-ratio:1000/470}
+  .map svg{position:absolute;inset:0;width:100%;height:100%;display:block}
+  .node{position:absolute;transform:translate(-50%,-50%);z-index:3}
+  .node .ring{position:absolute;left:50%;top:50%;width:9px;height:9px;border-radius:50%;background:var(--d-acc);transform:translate(-50%,-50%)}
+  .node .ring::after{content:"";position:absolute;inset:-3px;border-radius:50%;border:1px solid var(--d-acc);opacity:0;animation:ping 3s ease-out infinite}
+  @keyframes ping{0%{transform:scale(1);opacity:.7}100%{transform:scale(3.4);opacity:0}}
+  .node .lab{position:absolute;left:14px;top:-9px;white-space:nowrap;background:rgba(10,14,18,0.7);backdrop-filter:blur(4px);
+    border:1px solid var(--d-line);border-radius:6px;padding:5px 9px;transition:border-color .2s}
+  .node:hover .lab{border-color:var(--d-acc)}
+  .node .lab .c{display:block;font-size:12.5px;font-weight:500;letter-spacing:-0.01em;line-height:1.25}
+  .node .lab .t{display:block;font-family:var(--mono);font-size:10.5px;color:var(--d-acc);letter-spacing:.04em;margin-top:2px;font-variant-numeric:tabular-nums}
+  .node.flip .lab{left:auto;right:14px;text-align:right}
+  .map-cap{margin-top:14px;color:var(--d-ink-3);font-size:12px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
+
+  /* closer */
   .closer{padding:130px 0;text-align:center;border-top:1px solid var(--line)}
   .closer h2{max-width:18ch;margin:0 auto 16px}
   .closer p{color:var(--ink-2);font-size:18px;max-width:40ch;margin:0 auto 40px;line-height:1.55}
@@ -213,12 +232,14 @@
     .hero{padding:130px 0 0}
     .lanes,.paths{grid-template-columns:1fr}
     .lane{min-height:auto}
-    .caps{grid-template-columns:1fr}
+    .caps,.cards{grid-template-columns:1fr}
     .row2{grid-template-columns:1fr}
     .insight{padding:84px 0}
     .sec{padding:76px 0}
     .lane .status{position:static;align-self:flex-start;margin-bottom:18px}
-    .gl-top{align-items:flex-start}
+    .faster-inner{grid-template-columns:1fr;gap:40px}
+    .process-strip{display:none}
+    .engage{padding:76px 0}
   }
   @media(max-width:540px){
     .node .lab{display:none}
@@ -237,27 +258,27 @@
     <nav class="links">
       <a href="#what">What we do</a>
       <a href="#capabilities">Capabilities</a>
-      <a href="#work">How to start</a>
-      <a href="#global">Global</a>
+      <a href="#how">How to start</a>
+      <a href="#ventures">Ventures</a>
     </nav>
-    <a href="#work" class="btn">Work with us</a>
+    <a href="#how" class="btn">Start a build</a>
   </div>
 </header>
 
 <a id="top"></a>
-<section class="hero" data-screen-label="Hero">
+<section class="hero">
   <div class="wrap">
-    <div class="hero-tag mono"><span class="d"></span>Operations &amp; Ventures</div>
-    <h1 class="display">We don't advise companies. <span class="muted">We operate them.</span></h1>
-    <p class="hero-sub">Pilot Projects embeds a hands-on operating team inside growing companies — owning the systems, hiring, and day-to-day execution that turn momentum into a machine. <b>And we build ventures of our own.</b></p>
+    <div class="hero-tag mono"><span class="d"></span>Build partner &amp; Ventures</div>
+    <h1 class="display">We don't pitch decks. <span class="muted">We build the product.</span></h1>
+    <p class="hero-sub">Pilot Projects is a fully managed build team — product, engineering and QA — that takes founders from discovery to a live product. <b>And we build ventures of our own.</b></p>
     <div class="hero-cta">
-      <a href="#work" class="btn btn-lg">Work with us</a>
+      <a href="#how" class="btn btn-lg">Start a build</a>
       <a href="#ventures" class="btn btn-ghost btn-lg">Pitch a venture →</a>
     </div>
   </div>
   <div class="wrap">
     <div class="strip">
-      <span class="lbl mono">Introduced through teams like</span>
+      <span class="lbl mono">We work alongside teams like</span>
       <div class="names">
         <span>Angel Squad</span>
         <span>QED Investors</span>
@@ -271,30 +292,30 @@
 </section>
 
 <!-- INSIGHT -->
-<section class="insight" data-screen-label="Insight">
+<section class="insight">
   <div class="wrap">
     <div class="k mono reveal">Why we exist</div>
-    <p class="reveal">Growth breaks the operating system. <span class="dim">Most teams paper over it with another tool, or another consultant's deck. We step in and run it.</span></p>
+    <p class="reveal">Most founders don't need another opinion. <span class="dim">They need a technical team that ships — and stays accountable for what gets built.</span></p>
   </div>
 </section>
 
 <!-- WHAT WE DO -->
-<section class="sec" id="what" data-screen-label="What we do">
+<section class="sec" id="what">
   <div class="wrap">
     <div class="sec-label mono reveal"><span class="num">01</span><span>What we do</span></div>
     <div class="lanes reveal">
       <div class="lane">
-        <div class="tag mono">Operations</div>
-        <span class="status">By referral</span>
-        <h3>We run your engine room</h3>
-        <p>We embed alongside your team and take ownership of the operational work that's holding growth back — not a strategy deck, the actual running of it.</p>
-        <a href="#work" class="go">See how to start <span class="ar">→</span></a>
+        <div class="tag mono">Build partner</div>
+        <span class="status">Managed team</span>
+        <h3>We're the technical team that ships it</h3>
+        <p>We embed as your product, engineering and QA team — owning delivery from the first discovery call to a live, working product. Not a handover doc. The actual thing.</p>
+        <a href="#how" class="go">See how to start <span class="ar">→</span></a>
       </div>
       <div class="lane">
         <div class="tag mono">Ventures</div>
         <span class="status">Open to pitches</span>
         <h3>We build our own</h3>
-        <p>We start and back companies on the same workbench — and partner with founders who want operators in the room from day one, not just a cheque.</p>
+        <p>We start and back companies on the same workbench — and partner with founders who want a technical team in the room from day one, not just a cheque.</p>
         <a href="#ventures" class="go">Pitch a venture <span class="ar">→</span></a>
       </div>
     </div>
@@ -302,70 +323,97 @@
 </section>
 
 <!-- CAPABILITIES -->
-<section class="sec" id="capabilities" data-screen-label="Capabilities">
+<section class="sec" id="capabilities">
   <div class="wrap">
     <div class="sec-label mono reveal"><span class="num">02</span><span>Capabilities</span></div>
     <div class="cap-intro reveal">
       <h2>The work we<br>actually own.</h2>
-      <p>Not advice you have to go implement. We staff operators who've run this before and hand back working systems, your team trained on them.</p>
+      <p>Not recommendations you have to go execute. We staff engineers, PMs and QA who've shipped this before and hand back working product — your team trained on it.</p>
     </div>
     <div class="caps reveal">
-      <div class="cap"><div class="ci">01</div><h4>Revenue &amp; GTM operations</h4><p>Pipeline, CRM, reporting and the go-to-market motion — built to run without heroics.</p></div>
-      <div class="cap"><div class="ci">02</div><h4>Finance &amp; reporting</h4><p>Models, board packs, cash discipline and fundraising readiness that stands up to scrutiny.</p></div>
-      <div class="cap"><div class="ci">03</div><h4>Hiring &amp; team building</h4><p>Org design, recruiting and onboarding — so the right people land and ramp fast.</p></div>
-      <div class="cap"><div class="ci">04</div><h4>Systems &amp; automation</h4><p>The tooling stack and the workflows that connect it, so work moves without friction.</p></div>
-      <div class="cap"><div class="ci">05</div><h4>Programs &amp; delivery</h4><p>We run the cross-team projects that keep slipping — owned end to end, shipped on time.</p></div>
-      <div class="cap"><div class="ci">06</div><h4>Founder leverage</h4><p>We take the operational weight off the founder's desk so they can do the few things only they can.</p></div>
+      <div class="cap"><div class="ci">01</div><h4>MVP &amp; product builds</h4><p>Idea to working product — validated, designed, built and shipped on your timeline.</p></div>
+      <div class="cap"><div class="ci">02</div><h4>Business process automation</h4><p>Find the bottlenecks, automate the manual work, scale without adding headcount.</p></div>
+      <div class="cap"><div class="ci">03</div><h4>AI agents &amp; workflow tooling</h4><p>Custom agents and automations that do the repetitive work end to end, reliably.</p></div>
+      <div class="cap"><div class="ci">04</div><h4>Technical architecture &amp; engineering</h4><p>Production-grade systems built to scale — not to demo and then fall over.</p></div>
+      <div class="cap"><div class="ci">05</div><h4>Product management &amp; delivery</h4><p>A PM-led team running discovery, sprints and releases — on your clock, not ours.</p></div>
+      <div class="cap"><div class="ci">06</div><h4>QA &amp; reliability</h4><p>Dedicated QA across every release so what ships actually works, every time.</p></div>
     </div>
   </div>
 </section>
 
-<!-- GLOBAL (dark map band) -->
-<section class="sec global" id="global" data-screen-label="Global">
+<!-- WHY WE SHIP FASTER -->
+<section class="faster">
   <div class="wrap">
-    <div class="gl-top reveal">
-      <div>
-        <div class="sec-label mono"><span class="num">03</span><span>Global</span></div>
-        <h2>Someone is always<br>awake to run it. <em></em></h2>
+    <div class="faster-inner reveal">
+      <div class="faster-left">
+        <div class="k mono">Our edge</div>
+        <h2>Why we ship faster.</h2>
       </div>
-      <p class="gl-sub">Eight stations across four continents and seven time zones — so the work never waits for morning.</p>
+      <div class="faster-right">
+        <p>We build on our own <b>AI agents and battle-tested boilerplate libraries</b>, so you're not paying us to write what's already written. More of your budget goes to the parts that are actually unique to you.</p>
+        <p>The result: a typical MVP that takes another agency three months takes us six weeks — without cutting corners on quality or architecture.</p>
+      </div>
     </div>
-    <div class="map-wrap reveal">
-      <div class="map-top mono">
-        <span class="live"><span class="d"></span>Live · local time</span>
-        <span class="stat"><span>08 stations</span><span>04 continents</span><span>07 time zones</span></span>
+    <div class="process-strip reveal">
+      <div class="ps"><span class="pn">01</span><span class="pl">Discovery</span><span class="pa">→</span></div>
+      <div class="ps"><span class="pn">02</span><span class="pl">Solution design</span><span class="pa">→</span></div>
+      <div class="ps"><span class="pn">03</span><span class="pl">Build &amp; iterate</span><span class="pa">→</span></div>
+      <div class="ps"><span class="pn">04</span><span class="pl">Ship &amp; support</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW WE ENGAGE -->
+<section class="engage" id="engage">
+  <div class="wrap">
+    <div class="sec-label mono reveal"><span class="num">03</span><span>How we engage</span></div>
+    <div class="engage-intro reveal">
+      <h2>A model that<br>fits your stage.</h2>
+      <p>No day rates on this page — those live in the proposal. Here's the shape of how we work.</p>
+    </div>
+    <div class="cards reveal">
+      <div class="card">
+        <div class="cn">Option A</div>
+        <h4>Fixed-scope build</h4>
+        <p>Defined deliverable, defined price. We scope the MVP together, agree the spec, and deliver it. You know the number before we start.</p>
+        <div class="best">Best for <span>a clear, scoped MVP</span></div>
       </div>
-      <div class="map" id="map">
-        <svg viewBox="0 0 1000 470" preserveAspectRatio="none" id="mapsvg"></svg>
+      <div class="card">
+        <div class="cn">Option B</div>
+        <h4>Embedded sprint team</h4>
+        <p>An ongoing build cadence — monthly. We run sprints, ship continuously, and adapt as the product evolves. Your team on tap without the hire.</p>
+        <div class="best">Best for <span>scaling product fast</span></div>
       </div>
-      <div class="map-cap mono">
-        <span>Bangkok · Dubai · Mauritius · Cape Town · London · Miami · Chicago · Denver</span>
-        <span>PP / GLOBAL OPS</span>
+      <div class="card">
+        <div class="cn">Option C</div>
+        <h4>Build-for-equity partnership</h4>
+        <p>For the right venture, we take skin in the game instead of — or alongside — a fee. We're selective, but it's on the table for the right fit.</p>
+        <div class="best">Best for <span>early-stage ventures</span></div>
       </div>
     </div>
   </div>
 </section>
 
 <!-- HOW TO START -->
-<section class="sec" id="work" data-screen-label="How to start">
+<section class="sec" id="how">
   <div class="wrap">
     <div class="sec-label mono reveal"><span class="num">04</span><span>How to start</span></div>
     <div class="paths">
       <div class="path reveal">
-        <div class="ph"><span class="pn">Path A</span><h3>Operations — by referral</h3></div>
-        <p class="pdesc">We take on a small number of operating partners at a time, and we've found the best ones come <b>warmly introduced</b> by people we already work with. If you know someone inside one of these teams, ask them for an intro — that's the front door.</p>
-        <div class="gw-label mono">Ask for an introduction through</div>
+        <div class="ph"><span class="pn">Path A</span><h3>Warm intro — fastest way in</h3></div>
+        <p class="pdesc">We do our best work with founders who come through people we know and trust. If you have a connection inside one of these teams, <b>ask them for an intro</b> — it's the shortest path to a real conversation.</p>
+        <div class="gw-label mono">We work alongside</div>
         <a class="gw" href="https://www.hustlefund.vc/squad" target="_blank" rel="noopener"><span class="gw-name">Angel Squad</span><span class="meta">hustlefund.vc ↗</span></a>
         <a class="gw" href="https://www.qedinvestors.com/" target="_blank" rel="noopener"><span class="gw-name">QED Investors</span><span class="meta">qedinvestors.com ↗</span></a>
         <a class="gw" href="https://www.wobproject.com/" target="_blank" rel="noopener"><span class="gw-name">Women on Boards Project</span><span class="meta">wobproject.com ↗</span></a>
         <a class="gw" href="https://ocs.world/" target="_blank" rel="noopener"><span class="gw-name">Osiris International Group</span><span class="meta">ocs.world ↗</span></a>
         <a class="gw" href="https://www.crewgrab.com/" target="_blank" rel="noopener"><span class="gw-name">CrewGrab</span><span class="meta">crewgrab.com ↗</span></a>
         <a class="gw" href="https://joinodf.com/" target="_blank" rel="noopener"><span class="gw-name">On Deck</span><span class="meta">joinodf.com ↗</span></a>
-        <p class="gw-foot">Not sure who to ask? <b>Pitch a venture</b> on the right, or mention a mutual connection — we'll find the line.</p>
+        <p class="gw-foot">No connection? <b>The venture form is always open.</b> Tell us what you're building — that's all we need to start.</p>
       </div>
       <div class="path reveal" id="ventures">
-        <div class="ph"><span class="pn">Path B</span><h3>Ventures — pitch us directly</h3></div>
-        <p class="pdesc">Building something and want operators in the room? Tell us what you're making and what you need. <b>We reply within 48 hours.</b></p>
+        <div class="ph"><span class="pn">Path B</span><h3>Tell us what you're building</h3></div>
+        <p class="pdesc">Got a product to build or a venture to pitch? Drop us the details and we'll come back within 48 hours. <b>No deck required.</b></p>
         <form id="pitch">
           <div class="row2">
             <div class="field"><label for="f-name">Your name</label><input id="f-name" required name="name" autocomplete="name"></div>
@@ -374,9 +422,10 @@
           <div class="field"><label for="f-build">What are you building?</label><textarea id="f-build" required name="building"></textarea></div>
           <div class="row2">
             <div class="field"><label for="f-stage">Stage</label><select id="f-stage" required><option value="" disabled selected>Select —</option><option>Idea / pre-product</option><option>Building / pre-revenue</option><option>Revenue / scaling</option><option>Spinout / carve-out</option></select></div>
-            <div class="field"><label for="f-need">What do you need?</label><select id="f-need" required><option value="" disabled selected>Select —</option><option>Co-build partner</option><option>Operators on-demand</option><option>Equity / capital</option><option>Something else</option></select></div>
+            <div class="field"><label for="f-need">What do you need?</label><select id="f-need" required><option value="" disabled selected>Select —</option><option>MVP build</option><option>Ongoing sprint team</option><option>Build-for-equity</option><option>Process automation</option><option>Something else</option></select></div>
           </div>
-          <button class="btn" type="submit">Send pitch →</button>
+          <div class="field"><label for="f-ref">How did you hear about us?</label><input id="f-ref" name="referral" placeholder="e.g. Angel Squad, a friend, Google…"></div>
+          <button class="btn" type="submit">Send it →</button>
         </form>
         <div class="sent" id="sent">
           <div class="mono" style="color:var(--acc)">● Received</div>
@@ -389,42 +438,68 @@
   </div>
 </section>
 
-<!-- CLOSER -->
-<section class="closer" data-screen-label="Closer">
+<!-- GLOBAL -->
+<section class="sec global" id="global">
   <div class="wrap">
-    <h2 class="reveal">Ready to hand off the hard part?</h2>
-    <p class="reveal">Start with a warm intro, or pitch us a venture. Either way, you'll be talking to operators — not a sales team.</p>
+    <div class="gl-top reveal">
+      <div>
+        <div class="sec-label mono"><span class="num">05</span><span>Distributed team</span></div>
+        <h2>Building while<br>you sleep. <em></em></h2>
+      </div>
+      <p class="gl-sub">A distributed team across Cape Town, Mauritius and beyond — covering time zones so the sprint never stalls waiting for morning.</p>
+    </div>
+    <div class="map-wrap reveal">
+      <div class="map-top mono">
+        <span class="live"><span class="d"></span>Live · local time</span>
+        <span class="stat"><span>08 locations</span><span>04 continents</span><span>07 time zones</span></span>
+      </div>
+      <div class="map" id="map">
+        <svg viewBox="0 0 1000 470" preserveAspectRatio="none" id="mapsvg"></svg>
+      </div>
+      <div class="map-cap mono">
+        <span>Bangkok · Dubai · Mauritius · Cape Town · London · Miami · Chicago · Denver</span>
+        <span>PP / BUILD TEAM</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CLOSER -->
+<section class="closer">
+  <div class="wrap">
+    <h2 class="reveal">Ready to stop planning<br>and start building?</h2>
+    <p class="reveal">Start with a warm intro or send us what you're working on. Either way, you'll be talking to the people who'll build it — not a sales team.</p>
     <div class="hero-cta reveal">
-      <a href="#work" class="btn btn-lg">Get an introduction</a>
+      <a href="#how" class="btn btn-lg">Start a build</a>
       <a href="#ventures" class="btn btn-ghost btn-lg">Pitch a venture →</a>
     </div>
   </div>
 </section>
 
-<footer data-screen-label="Footer">
+<footer>
   <div class="wrap">
     <div class="foot-top">
       <div>
         <img src="assets/logo-ink.png" alt="Pilot Projects" style="height:58px;width:auto;display:block">
-        <div class="foot-tag">Operators and venture builders, running the engine room of growing companies.</div>
+        <div class="foot-tag">A managed build team for founders — shipping product, automating process, building ventures.</div>
       </div>
       <div class="foot-nav">
         <div class="foot-col">
           <h5>Company</h5>
           <a href="#what">What we do</a>
           <a href="#capabilities">Capabilities</a>
-          <a href="#global">Global</a>
+          <a href="#engage">How we engage</a>
         </div>
         <div class="foot-col">
           <h5>Start</h5>
-          <a href="#work">Get an intro</a>
+          <a href="#how">Start a build</a>
           <a href="#ventures">Pitch a venture</a>
         </div>
       </div>
     </div>
     <div class="foot-bottom mono">
       <span>© Pilot Projects Group · MMXXVI</span>
-      <span>Bangkok · Dubai · Mauritius · Cape Town · London · Miami · Chicago · Denver</span>
+      <span>Cape Town · Mauritius · Bangkok · Dubai · London · Miami · Chicago · Denver</span>
     </div>
   </div>
 </footer>
@@ -436,9 +511,13 @@
   const io=new IntersectionObserver((es)=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:0.12});
   document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
 
-  document.getElementById('pitch').addEventListener('submit',e=>{e.preventDefault();e.target.style.display='none';document.getElementById('sent').classList.add('show')});
+  document.getElementById('pitch').addEventListener('submit',e=>{
+    e.preventDefault();
+    e.target.style.display='none';
+    document.getElementById('sent').classList.add('show');
+  });
 
-  /* ---- live world map ---- */
+  /* live world map */
   const cities=[
     {c:"Denver",tz:"America/Denver",lat:39.74,lon:-104.99},
     {c:"Chicago",tz:"America/Chicago",lat:41.88,lon:-87.63},
@@ -449,22 +528,19 @@
     {c:"Mauritius",tz:"Indian/Mauritius",lat:-20.16,lon:57.5},
     {c:"Bangkok",tz:"Asia/Bangkok",lat:13.75,lon:100.5},
   ];
-  const VB={w:1000,h:470}, lonMin=-130,lonMax=120,latMax=60,latMin=-42;
-  const px=(lon)=> (lon-lonMin)/(lonMax-lonMin)*VB.w;
-  const py=(lat)=> (latMax-lat)/(latMax-latMin)*VB.h;
+  const VB={w:1000,h:470},lonMin=-130,lonMax=120,latMax=60,latMin=-42;
+  const px=lon=>(lon-lonMin)/(lonMax-lonMin)*VB.w;
+  const py=lat=>(latMax-lat)/(latMax-latMin)*VB.h;
   cities.forEach(c=>{c.x=px(c.lon);c.y=py(c.lat);});
 
   const svg=document.getElementById('mapsvg');
   let dots="";
-  for(let gx=20;gx<VB.w;gx+=26){
-    for(let gy=18;gy<VB.h;gy+=26){
-      dots+=`<circle cx="${gx}" cy="${gy}" r="1.1" fill="rgba(238,241,238,0.07)"/>`;
-    }
-  }
+  for(let gx=20;gx<VB.w;gx+=26)for(let gy=18;gy<VB.h;gy+=26)
+    dots+=`<circle cx="${gx}" cy="${gy}" r="1.1" fill="rgba(238,241,238,0.07)"/>`;
   let arcs="";
   for(let i=0;i<cities.length-1;i++){
     const a=cities[i],b=cities[i+1];
-    const mx=(a.x+b.x)/2, my=Math.min(a.y,b.y)-Math.abs(b.x-a.x)*0.18-20;
+    const mx=(a.x+b.x)/2,my=Math.min(a.y,b.y)-Math.abs(b.x-a.x)*0.18-20;
     arcs+=`<path d="M${a.x} ${a.y} Q ${mx} ${my} ${b.x} ${b.y}" fill="none" stroke="url(#ag)" stroke-width="1.1" class="arc" stroke-dasharray="4 5"/>`;
   }
   svg.innerHTML=`<defs><linearGradient id="ag" x1="0" y1="0" x2="1" y2="0">
@@ -484,8 +560,7 @@
   });
   function tick(){
     document.querySelectorAll('.t[data-tz]').forEach(el=>{
-      const p=new Intl.DateTimeFormat('en-US',{timeZone:el.dataset.tz,hour:'2-digit',minute:'2-digit',hour12:false}).format(new Date());
-      el.textContent=p;
+      el.textContent=new Intl.DateTimeFormat('en-US',{timeZone:el.dataset.tz,hour:'2-digit',minute:'2-digit',hour12:false}).format(new Date());
     });
   }
   tick();setInterval(tick,1000*15);
