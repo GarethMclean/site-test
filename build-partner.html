@@ -511,10 +511,34 @@
   const io=new IntersectionObserver((es)=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:0.12});
   document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
 
-  document.getElementById('pitch').addEventListener('submit',e=>{
+  document.getElementById('pitch').addEventListener('submit',async e=>{
     e.preventDefault();
-    e.target.style.display='none';
-    document.getElementById('sent').classList.add('show');
+    const form=e.target;
+    const btn=form.querySelector('button[type="submit"]');
+    btn.textContent='Sending…';
+    btn.disabled=true;
+
+    const data={
+      name:document.getElementById('f-name').value,
+      email:document.getElementById('f-email').value,
+      building:document.getElementById('f-build').value,
+      stage:document.getElementById('f-stage').value,
+      need:document.getElementById('f-need').value,
+      referral:document.getElementById('f-ref').value,
+    };
+
+    try{
+      const res=await fetch('/api/submit',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
+      if(!res.ok)throw new Error('Server error');
+      form.style.display='none';
+      document.getElementById('sent').classList.add('show');
+    }catch(err){
+      btn.textContent='Send it →';
+      btn.disabled=false;
+      let errEl=document.getElementById('form-err');
+      if(!errEl){errEl=document.createElement('p');errEl.id='form-err';errEl.style.cssText='color:#c0392b;font-size:14px;margin-top:12px';form.appendChild(errEl);}
+      errEl.textContent='Something went wrong — please try again or email us directly.';
+    }
   });
 
   /* live world map */
