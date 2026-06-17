@@ -38,7 +38,7 @@ module.exports = async function handler(req, res) {
         'Authorization': `Bearer ${pat}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ fields }),
+      body: JSON.stringify({ fields, typecast: true }),
     });
 
     if (!response.ok) {
