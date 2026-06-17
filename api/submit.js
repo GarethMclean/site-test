@@ -13,7 +13,7 @@ module.exports = async function handler(req, res) {
   }
 
   const body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
-  const { name, email, building, stage, need, referral } = body || {};
+  const { name, email, building, stage, need, referral, company, website } = body || {};
 
   if (!name || !email || !building || !stage || !need) {
     return res.status(400).json({ error: 'Missing required fields' });
@@ -27,9 +27,9 @@ module.exports = async function handler(req, res) {
     'Need': need,
     'Status': 'New',
   };
-  if (referral && referral.trim()) {
-    fields['Referral'] = referral.trim();
-  }
+  if (referral && referral.trim()) fields['Referral'] = referral.trim();
+  if (company && company.trim()) fields['Company'] = company.trim();
+  if (website && website.trim()) fields['Website'] = website.trim();
 
   try {
     const response = await fetch(`https://api.airtable.com/v0/${BASE_ID}/${TABLE_ID}`, {
@@ -52,4 +52,4 @@ module.exports = async function handler(req, res) {
     console.error('Unexpected error:', err);
     return res.status(500).json({ error: 'Server error' });
   }
-}
+};
