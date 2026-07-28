@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MVP Discovery — Pilot Projects</title>
+<meta name="description" content="A structured discovery wizard to define your MVP with Pilot Projects. Answers autosave — leave and resume anytime.">
+<link rel="icon" type="image/png" href="assets/mark-ink.png">
+<style>
+  :root{
+    --bg:#f1ede4; --paper:#f8f5ee; --ink:#14140e; --ink-2:#56524a; --ink-3:#8b867a;
+    --line:#d6d0c3; --line-2:#e4dfd2;
+    --acc:oklch(0.46 0.10 152); --acc-soft:oklch(0.46 0.10 152 / 0.10);
+    --must:oklch(0.46 0.10 152); --should:#2a5a8a; --could:#9a6700; --wont:var(--ink-3);
+    --sans:"Helvetica Neue",Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,"SF Mono","Menlo","Roboto Mono",monospace;
+    --danger:#b42318; --warn:#9a6700;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);
+    -webkit-font-smoothing:antialiased;line-height:1.55;min-height:100vh}
+  ::selection{background:var(--ink);color:var(--bg)}
+  a{color:inherit;text-decoration:none}
+  :focus-visible{outline:2px solid var(--acc);outline-offset:3px}
+
+  .shell{max-width:720px;margin:0 auto;padding:28px 22px 96px}
+  header.top{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:28px}
+  .brand{display:flex;align-items:center;gap:11px;font-weight:700;font-size:15px;letter-spacing:-0.01em}
+  .brand img{height:22px;width:auto}
+  .top-meta{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);text-align:right}
+  .top-meta .save{color:var(--acc);margin-top:4px;letter-spacing:.06em;text-transform:none;font-family:var(--sans);font-size:12px;min-height:16px}
+
+  .progress{height:4px;background:var(--line-2);border-radius:99px;overflow:hidden;margin-bottom:28px}
+  .progress i{display:block;height:100%;width:0;background:var(--acc);border-radius:99px;transition:width .35s ease}
+
+  .card{background:var(--paper);border:1px solid var(--line);border-radius:3px;padding:34px 30px;display:none;animation:fade .28s ease}
+  .card.active{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .kicker{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--acc);margin-bottom:10px}
+  h1{font-size:clamp(28px,5vw,36px);letter-spacing:-0.03em;line-height:1.1;margin-bottom:8px}
+  h2{font-size:clamp(24px,4vw,30px);letter-spacing:-0.025em;line-height:1.15;margin-bottom:8px}
+  .sub{color:var(--ink-2);font-size:15px;margin-bottom:22px;max-width:52ch}
+  .conf{font-size:13px;color:var(--ink-3);margin-top:18px;padding-top:16px;border-top:1px solid var(--line-2);line-height:1.5}
+
+  label{display:block;font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);margin:20px 0 8px}
+  label small{display:block;font-family:var(--sans);font-size:13px;letter-spacing:0;text-transform:none;color:var(--ink-2);font-weight:400;margin-top:4px;line-height:1.45}
+  input[type=text],input[type=email],textarea,select{
+    width:100%;background:transparent;border:none;border-bottom:1.5px solid var(--line);
+    color:var(--ink);padding:10px 0;font-size:16px;font-family:inherit;outline:none;transition:border-color .15s}
+  input:focus,textarea:focus,select:focus{border-color:var(--ink)}
+  textarea{resize:vertical;min-height:72px;line-height:1.5}
+
+  .pills{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+  .pill{background:transparent;border:1.5px solid var(--line);border-radius:999px;padding:8px 15px;font-size:13.5px;cursor:pointer;color:var(--ink-2);transition:all .15s;user-select:none;font-family:inherit}
+  .pill:hover{border-color:var(--ink);color:var(--ink)}
+  .pill.on{background:var(--ink);border-color:var(--ink);color:var(--bg)}
+
+  .nav{display:flex;justify-content:space-between;gap:12px;margin-top:28px;flex-wrap:wrap}
+  button.btn,a.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:inherit;font-size:14.5px;font-weight:600;
+    border-radius:2px;padding:13px 22px;cursor:pointer;border:none;transition:transform .2s,background .2s;text-decoration:none}
+  .btn-primary{background:var(--ink);color:var(--bg)}
+  .btn-primary:hover{transform:translateY(-2px);background:var(--acc)}
+  .btn-ghost{background:transparent;color:var(--ink);border:1.5px solid var(--ink);padding:11.5px 20px}
+  .btn-ghost:hover{background:var(--ink);color:var(--bg)}
+  .btn:disabled{opacity:.55;cursor:not-allowed;transform:none}
+  .err{color:var(--danger);font-size:13px;margin-top:14px;display:none}
+
+  .featadd{display:flex;gap:10px;margin-bottom:16px;align-items:stretch}
+  .featadd input{flex:1}
+  .featadd .btn{flex-shrink:0;padding:10px 16px}
+  .feat{display:flex;align-items:center;gap:10px;background:var(--bg);border:1px solid var(--line);border-radius:3px;padding:10px 12px;margin-bottom:8px;flex-wrap:wrap}
+  .feat .name{flex:1;font-size:14.5px;min-width:140px}
+  .feat .del{background:none;border:none;color:var(--ink-3);cursor:pointer;font-size:16px;padding:2px 6px;font-family:inherit}
+  .feat .del:hover{color:var(--danger)}
+  .buckets{display:flex;gap:5px}
+  .bk{border:1px solid var(--line);background:transparent;color:var(--ink-3);border-radius:2px;padding:5px 9px;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--mono)}
+  .bk.M.on{background:var(--must);border-color:var(--must);color:#fff}
+  .bk.S.on{background:var(--should);border-color:var(--should);color:#fff}
+  .bk.C.on{background:#9a6700;border-color:#9a6700;color:#fff}
+  .bk.W.on{background:var(--ink-3);border-color:var(--ink-3);color:#fff}
+  .mustmeter{font-size:13px;margin-top:12px;color:var(--ink-3)}
+  .mustmeter.bad{color:var(--warn);font-weight:600}
+  .legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12.5px;color:var(--ink-3);margin-bottom:14px}
+
+  .upload{border:1.5px dashed var(--line);border-radius:3px;padding:28px 20px;text-align:center;background:var(--bg);cursor:pointer;transition:border-color .2s,background .2s}
+  .upload:hover,.upload.drag{border-color:var(--acc);background:var(--acc-soft)}
+  .upload input{display:none}
+  .upload p{color:var(--ink-2);font-size:14.5px}
+  .upload .hint{color:var(--ink-3);font-size:12.5px;margin-top:6px}
+  .flist{margin-top:14px}
+  .frow{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--line-2);font-size:14px}
+  .frow .st{color:var(--ink-3);font-size:12px}
+
+  .brief{display:none}
+  .review{display:grid;gap:14px;margin-bottom:22px}
+  .rev-sec{background:var(--bg);border:1px solid var(--line);border-radius:3px;padding:18px 18px 16px}
+  .rev-sec.editing{border-color:var(--ink);background:var(--paper)}
+  .rev-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+  .rev-head h3{font-size:16px;letter-spacing:-0.02em;font-weight:600}
+  .rev-edit{background:none;border:none;color:var(--acc);font-family:inherit;font-size:13px;font-weight:600;cursor:pointer;padding:0}
+  .rev-edit:hover{text-decoration:underline;text-underline-offset:3px}
+  .rev-sec dl{display:grid;gap:12px}
+  .rev-sec dt{font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);margin-bottom:3px}
+  .rev-sec dd{color:var(--ink);font-size:14.5px;line-height:1.5;white-space:pre-wrap}
+  .rev-sec dd.empty{color:var(--ink-3);font-style:italic}
+  .rev-chips{display:flex;flex-wrap:wrap;gap:6px}
+  .rev-chip{font-size:12.5px;padding:5px 10px;border:1px solid var(--line);border-radius:999px;background:var(--paper)}
+  .rev-chip.m{border-color:var(--must);color:var(--must);font-weight:600}
+  .rev-fields{display:grid;gap:4px}
+  .rev-fields label{margin-top:14px}
+  .rev-fields label:first-child{margin-top:0}
+  .rev-done{margin-top:18px}
+  .actions{display:none}
+  .book-box{display:none}
+  .sent-panel{display:none;border:1.5px solid var(--acc);background:var(--acc-soft);padding:28px 24px;border-radius:3px;margin-bottom:22px}
+  .sent-panel.show{display:block;animation:fade .35s ease}
+  .sent-panel h3{font-size:22px;letter-spacing:-0.02em;margin:8px 0 8px}
+  .sent-panel p{color:var(--ink-2);font-size:15px;max-width:42ch}
+
+  .sticky-bar{
+    position:fixed;left:0;right:0;bottom:0;z-index:50;
+    background:rgba(248,245,238,0.92);backdrop-filter:blur(14px);
+    border-top:1px solid var(--line);
+    transform:translateY(110%);transition:transform .28s ease;
+    padding:14px 18px calc(14px + env(safe-area-inset-bottom));
+  }
+  .sticky-bar.show{transform:translateY(0)}
+  .sticky-inner{max-width:720px;margin:0 auto;display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+  .sticky-inner .hint{font-size:13px;color:var(--ink-3);flex:1;min-width:140px}
+  .sticky-ctas{display:flex;gap:10px;flex-wrap:wrap}
+  body.has-sticky{padding-bottom:110px}
+
+  .toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);font-weight:600;font-size:14px;padding:11px 18px;border-radius:999px;opacity:0;pointer-events:none;transition:opacity .25s;z-index:60}
+  .toast.show{opacity:1}
+
+  @media(max-width:560px){
+    .card{padding:26px 18px}
+    .shell{padding:20px 16px 80px}
+    .sticky-inner{flex-direction:column;align-items:stretch}
+    .sticky-ctas .btn{flex:1;justify-content:center}
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+  <header class="top">
+    <a class="brand" href="/"><img src="assets/mark-ink.png" alt="">Pilot Projects</a>
+    <div class="top-meta">
+      <div id="stepcount">MVP Discovery</div>
+      <div class="save" id="savestatus"></div>
+    </div>
+  </header>
+
+  <div id="panel-wizard">
+    <div class="progress"><i id="bar"></i></div>
+
+    <!-- STEP 0 -->
+    <section class="card active" data-step="0">
+      <div class="kicker">MVP Discovery</div>
+      <h1>Let's define your MVP.</h1>
+      <p class="sub">Before we write a line of code, we want to understand your product. About 10 minutes — autosaved as you go. Be blunt and specific; rough answers beat polished vagueness.</p>
+      <label for="f_name">Your name</label>
+      <input type="text" id="f_name" autocomplete="name" placeholder="Jane Founder">
+      <label for="f_company">Company / project name</label>
+      <input type="text" id="f_company" autocomplete="organization" placeholder="Acme">
+      <label for="f_email">Email</label>
+      <input type="email" id="f_email" autocomplete="email" placeholder="jane@acme.com">
+      <p class="conf">Your answers and any files you upload are treated as confidential and used only to scope and deliver work with Pilot Projects. We won’t share them outside the team without your say-so.</p>
+      <p class="err" id="err0">Please fill in all three fields.</p>
+      <div class="nav"><span></span><button type="button" class="btn btn-primary" onclick="next()">Start →</button></div>
+    </section>
+
+    <!-- STEP 1 -->
+    <section class="card" data-step="1">
+      <div class="kicker">Step 1 of 7</div>
+      <h2>The Problem</h2>
+      <p class="sub">Great products are painkillers. Tell us about the pain.</p>
+      <label for="f_problem">What problem are you solving? <small>One or two sentences. What's broken, slow, expensive, or impossible today?</small></label>
+      <textarea id="f_problem"></textarea>
+      <label for="f_painwho">Who feels this pain most acutely? <small>Be specific: "compliance officers at small fund admins", not "businesses".</small></label>
+      <textarea id="f_painwho"></textarea>
+      <label for="f_today">How do they solve it today? <small>Spreadsheets? Email? A competitor? Nothing at all?</small></label>
+      <textarea id="f_today"></textarea>
+      <p class="err" id="err1">Please answer all questions in this step.</p>
+      <div class="nav"><button type="button" class="btn btn-ghost" onclick="back()">← Back</button><button type="button" class="btn btn-primary" onclick="next()">Next →</button></div>
+    </section>
+
+    <!-- STEP 2 -->
+    <section class="card" data-step="2">
+      <div class="kicker">Step 2 of 7</div>
+      <h2>Target Users</h2>
+      <p class="sub">Who touches the product, and who pays for it — often not the same person.</p>
+      <label for="f_user">Primary user <small>The person using the product day-to-day.</small></label>
+      <textarea id="f_user"></textarea>
+      <label for="f_payer">Who pays? <small>The same user? Their manager? A company subscription?</small></label>
+      <input type="text" id="f_payer">
+      <label>Market type</label>
+      <div class="pills" id="p_market">
+        <button type="button" class="pill" data-v="B2B">B2B</button>
+        <button type="button" class="pill" data-v="B2C">B2C</button>
+        <button type="button" class="pill" data-v="B2B2C">B2B2C</button>
+        <button type="button" class="pill" data-v="Marketplace">Marketplace</button>
+      </div>
+      <p class="err" id="err2">Please answer all questions and pick a market type.</p>
+      <div class="nav"><button type="button" class="btn btn-ghost" onclick="back()">← Back</button><button type="button" class="btn btn-primary" onclick="next()">Next →</button></div>
+    </section>
+
+    <!-- STEP 3 -->
+    <section class="card" data-step="3">
+      <div class="kicker">Step 3 of 7</div>
+      <h2>The Solution</h2>
+      <p class="sub">Now the fun part — what you're building.</p>
+      <label for="f_pitch">Describe your product in one sentence <small>"X for Y" is fine. Clarity over cleverness.</small></label>
+      <input type="text" id="f_pitch">
+      <label for="f_magic">What's the magic moment? <small>The instant a user first gets real value.</small></label>
+      <textarea id="f_magic"></textarea>
+      <label>What exists already?</label>
+      <div class="pills" id="p_stage">
+        <button type="button" class="pill" data-v="Just the idea">Just the idea</button>
+        <button type="button" class="pill" data-v="Designs / mockups">Designs / mockups</button>
+        <button type="button" class="pill" data-v="Prototype">Prototype</button>
+        <button type="button" class="pill" data-v="Live product">Live product</button>
+      </div>
+      <p class="err" id="err3">Please answer all questions and pick a stage.</p>
+      <div class="nav"><button type="button" class="btn btn-ghost" onclick="back()">← Back</button><button type="button" class="btn btn-primary" onclick="next()">Next →</button></div>
+    </section>
+
+    <!-- STEP 4 -->
+    <section class="card" data-step="4">
+      <div class="kicker">Step 4 of 7</div>
+      <h2>Feature Prioritization</h2>
+      <p class="sub">List features you can imagine, then sort each one. <strong>An MVP earns a maximum of 5 must-haves</strong> — that discipline is what gets you to market fast.</p>
+      <div class="legend">
+        <span><b>M</b> Must-have (v1)</span>
+        <span><b>S</b> Should-have</span>
+        <span><b>C</b> Could-have</span>
+        <span><b>W</b> Won't-have (v1)</span>
+      </div>
+      <div class="featadd">
+        <input type="text" id="featin" placeholder="e.g. Client dashboard" onkeydown="if(event.key==='Enter'){event.preventDefault();addFeat()}">
+        <button type="button" class="btn btn-primary" onclick="addFeat()">Add</button>
+      </div>
+      <div id="featlist"></div>
+      <p class="mustmeter" id="mustmeter">Must-haves: 0 / 5</p>
+      <p class="err" id="err4">Add at least 3 features and sort every one of them (max 5 must-haves).</p>
+      <div class="nav"><button type="button" class="btn btn-ghost" onclick="back()">← Back</button><button type="button" class="btn btn-primary" onclick="next()">Next →</button></div>
+    </section>
+
+    <!-- STEP 5 -->
+    <section class="card" data-step="5">
+      <div class="kicker">Step 5 of 7</div>
+      <h2>Constraints &amp; Context</h2>
+      <p class="sub">The realities that shape the build.</p>
+      <label>Target launch window</label>
+      <div class="pills" id="p_launch">
+        <button type="button" class="pill" data-v="&lt; 6 weeks">&lt; 6 weeks</button>
+        <button type="button" class="pill" data-v="6–12 weeks">6–12 weeks</button>
+        <button type="button" class="pill" data-v="3–6 months">3–6 months</button>
+        <button type="button" class="pill" data-v="Flexible">Flexible</button>
+      </div>
+      <label>Budget bracket (USD)</label>
+      <div class="pills" id="p_budget">
+        <button type="button" class="pill" data-v="&lt; $10k">&lt; $10k</button>
+        <button type="button" class="pill" data-v="$10k–$25k">$10k–$25k</button>
+        <button type="button" class="pill" data-v="$25k–$75k">$25k–$75k</button>
+        <button type="button" class="pill" data-v="$75k+">$75k+</button>
+      </div>
+      <label>Platform</label>
+      <div class="pills" id="p_platform">
+        <button type="button" class="pill" data-v="Web app">Web app</button>
+        <button type="button" class="pill" data-v="Mobile app">Mobile app</button>
+        <button type="button" class="pill" data-v="Web + mobile">Web + mobile</button>
+      </div>
+      <label for="f_integrations">Integrations needed <small>Payments, auth, third-party APIs, existing systems…</small></label>
+      <textarea id="f_integrations" placeholder="e.g. Stripe, Google SSO, Xero"></textarea>
+      <label for="f_compliance">Compliance / regulatory <small>KYC/AML, GDPR, financial-services rules — or "none".</small></label>
+      <textarea id="f_compliance" placeholder="e.g. KYC checks required for onboarding"></textarea>
+      <p class="err" id="err5">Please pick a launch window, budget and platform.</p>
+      <div class="nav"><button type="button" class="btn btn-ghost" onclick="back()">← Back</button><button type="button" class="btn btn-primary" onclick="next()">Next →</button></div>
+    </section>
+
+    <!-- STEP 6 -->
+    <section class="card" data-step="6">
+      <div class="kicker">Step 6 of 7</div>
+      <h2>Success</h2>
+      <p class="sub">If we can't measure it, we can't build toward it.</p>
+      <label for="f_success">What does success look like 3 months after launch? <small>A metric, not a vibe: "20 paying customers", "500 weekly active users".</small></label>
+      <textarea id="f_success"></textarea>
+      <label for="f_risk">What's the riskiest assumption the MVP must test? <small>The one belief that, if wrong, kills the product.</small></label>
+      <textarea id="f_risk"></textarea>
+      <p class="err" id="err6">Please answer both questions.</p>
+      <div class="nav"><button type="button" class="btn btn-ghost" onclick="back()">← Back</button><button type="button" class="btn btn-primary" onclick="next()">Next →</button></div>
+    </section>
+
+    <!-- STEP 7 materials -->
+    <section class="card" data-step="7">
+      <div class="kicker">Step 7 of 7</div>
+      <h2>Materials</h2>
+      <p class="sub">Optional — deck, wireframes, Loom link, or anything that helps us understand the product faster.</p>
+      <label for="f_links">Links <small>Notion, Figma, Loom, live prototype…</small></label>
+      <textarea id="f_links" placeholder="https://"></textarea>
+      <label>File upload <small>PDF, PPT, Keynote, images — up to 8MB each.</small></label>
+      <div class="upload" id="dropzone">
+        <input type="file" id="filein" multiple accept=".pdf,.doc,.docx,.ppt,.pptx,.key,.png,.jpg,.jpeg,.webp,.gif,.txt,.md,application/pdf">
+        <p>Drop files here or click to browse</p>
+        <div class="hint">Treated as confidential — same as your answers above.</div>
+      </div>
+      <div class="flist" id="flist"></div>
+      <p class="err" id="err7"></p>
+      <div class="nav"><button type="button" class="btn btn-ghost" onclick="back()">← Back</button><button type="button" class="btn btn-primary" onclick="next()">Review brief →</button></div>
+    </section>
+
+    <!-- STEP 8 review -->
+    <section class="card" data-step="8">
+      <div class="kicker">Done</div>
+      <h2>Your MVP Brief</h2>
+      <p class="sub">Skim each section — edit anything that feels off — then send it over. We'll come back with our take, usually within 48 hours.</p>
+
+      <div class="sent-panel" id="sentPanel">
+        <div class="kicker">Received</div>
+        <h3>We've got your brief.</h3>
+        <p>Someone on the team will review it and follow up. While you wait, grab a scoping slot if you're ready to talk.</p>
+      </div>
+
+      <div class="review" id="review"></div>
+    </section>
+  </div>
+</div>
+
+<footer class="sticky-bar" id="stickyBar" aria-hidden="true">
+  <div class="sticky-inner">
+    <div class="hint" id="stickyHint">Ready when you are — send the brief or book a call.</div>
+    <div class="sticky-ctas">
+      <a class="btn btn-ghost" id="stickyBook" href="https://calendar.app.google/5GmqhQLFE7j9h96F8" target="_blank" rel="noopener">Book a call</a>
+      <button type="button" class="btn btn-primary" id="submitBtn" onclick="submitBrief()">Send to Pilot Projects →</button>
+    </div>
+  </div>
+</footer>
+
+<div class="toast" id="toast">Saved</div>
+
+<script>
+/* Google Appointment Schedule — opens in a new tab (iframe often blocked). */
+window.PP_BOOKING_URL = window.PP_BOOKING_URL || 'https://calendar.app.google/5GmqhQLFE7j9h96F8';
+
+const TOTAL_STEPS = 8; // 0..8
+let step = 0;
+const feats = [];
+let recordId = localStorage.getItem('pp_discovery_id') || null;
+let saveTimer = null;
+let uploaded = [];
+let submitted = false;
+let editingSection = null;
+
+const invite = new URLSearchParams(location.search).get('invite') || '';
+
+function $(id){ return document.getElementById(id); }
+function val(id){ return $(id).value.trim(); }
+function setSave(msg){ $('savestatus').textContent = msg || ''; }
+function esc(s){
+  return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function dd(text){
+  const t = (text || '').trim();
+  return t ? `<dd>${esc(t)}</dd>` : `<dd class="empty">Not answered</dd>`;
+}
+function syncField(fromId, toId){
+  const a=$(fromId), b=$(toId);
+  if(a && b) b.value = a.value;
+}
+function bindSync(fromId, toId){
+  const el=$(fromId); if(!el) return;
+  el.addEventListener('input', ()=>{ syncField(fromId, toId); scheduleSave(); });
+}
+
+document.querySelectorAll('.pills').forEach(group => {
+  group.addEventListener('click', e => {
+    const p = e.target.closest('.pill'); if(!p) return;
+    group.querySelectorAll('.pill').forEach(x => x.classList.remove('on'));
+    p.classList.add('on');
+    scheduleSave();
+  });
+});
+function pillVal(groupId){
+  const on = document.querySelector('#'+groupId+' .pill.on');
+  return on ? on.dataset.v : '';
+}
+function setPill(groupId, value){
+  if(!value) return;
+  document.querySelectorAll('#'+groupId+' .pill').forEach(p => {
+    p.classList.toggle('on', p.dataset.v === value);
+  });
+}
+
+function addFeat(){
+  const v = val('featin'); if(!v) return;
+  feats.push({name:v, bucket:null});
+  $('featin').value='';
+  renderFeats();
+  scheduleSave();
+}
+function renderFeats(){
+  const list = $('featlist'); list.innerHTML='';
+  feats.forEach((f,i)=>{
+    const row = document.createElement('div'); row.className='feat';
+    row.innerHTML = '<span class="name"></span><span class="buckets">'+
+      ['M','S','C','W'].map(b=>`<button type="button" class="bk ${b}${f.bucket===b?' on':''}" data-i="${i}" data-b="${b}">${b}</button>`).join('')+
+      '</span><button type="button" class="del" title="Remove">✕</button>';
+    row.querySelector('.name').textContent = f.name;
+    row.querySelector('.del').onclick = ()=>{ feats.splice(i,1); renderFeats(); scheduleSave(); };
+    row.querySelectorAll('.bk').forEach(btn => {
+      btn.onclick = ()=>{ feats[+btn.dataset.i].bucket = btn.dataset.b; renderFeats(); scheduleSave(); };
+    });
+    list.appendChild(row);
+  });
+  const musts = feats.filter(f=>f.bucket==='M').length;
+  const m = $('mustmeter');
+  m.textContent = 'Must-haves: '+musts+' / 5' + (musts>5 ? ' — that\'s too many. What can wait?' : '');
+  m.className = 'mustmeter' + (musts>5 ? ' bad' : '');
+}
+
+function validate(s){
+  switch(s){
+    case 0: return val('f_name') && val('f_company') && val('f_email');
+    case 1: return val('f_problem') && val('f_painwho') && val('f_today');
+    case 2: return val('f_user') && val('f_payer') && pillVal('p_market');
+    case 3: return val('f_pitch') && val('f_magic') && pillVal('p_stage');
+    case 4: return feats.length>=3 && feats.every(f=>f.bucket) && feats.filter(f=>f.bucket==='M').length<=5;
+    case 5: return pillVal('p_launch') && pillVal('p_budget') && pillVal('p_platform');
+    case 6: return val('f_success') && val('f_risk');
+    case 7: return true;
+  }
+  return true;
+}
+
+function show(s){
+  document.querySelectorAll('.card').forEach(c=>c.classList.toggle('active', +c.dataset.step===s));
+  $('bar').style.width = (s/TOTAL_STEPS*100)+'%';
+  $('stepcount').textContent = s===0 ? 'MVP Discovery' : (s<8 ? 'Step '+s+' of 7' : 'Complete');
+  updateSticky(s===8);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function updateSticky(onReview){
+  const bar = $('stickyBar');
+  const book = $('stickyBook');
+  if(book) book.href = window.PP_BOOKING_URL;
+  bar.classList.toggle('show', onReview);
+  bar.setAttribute('aria-hidden', onReview ? 'false' : 'true');
+  document.body.classList.toggle('has-sticky', onReview);
+  if(submitted){
+    $('submitBtn').textContent = 'Sent ✓';
+    $('submitBtn').disabled = true;
+    $('stickyHint').textContent = 'Brief received — book a call anytime.';
+  } else if(onReview){
+    $('stickyHint').textContent = 'Ready when you are — send the brief or book a call.';
+  }
+}
+
+async function next(){
+  const err = $('err'+step);
+  if(!validate(step)){ if(err){ err.style.display='block'; } return; }
+  if(err) err.style.display='none';
+
+  if(step===0 && !recordId){
+    const created = await api({ action:'create', ...payload(), step:0 });
+    if(!created) return;
+  } else {
+    await api({ action:'save', recordId, ...payload(), step });
+  }
+
+  step++;
+  if(step===8){
+    editingSection = null;
+    renderReview();
+  }
+  show(step);
+  scheduleSave(true);
+}
+
+async function back(){
+  step = Math.max(0, step-1);
+  show(step);
+}
+
+function startEdit(sec){
+  if(submitted) return;
+  editingSection = sec;
+  renderReview();
+  const el = document.querySelector('.rev-sec.editing');
+  if(el) el.scrollIntoView({behavior:'smooth', block:'center'});
+}
+
+function doneEdit(){
+  if(editingSection === 'features'){
+    const musts = feats.filter(f=>f.bucket==='M').length;
+    if(feats.length < 3 || feats.some(f=>!f.bucket) || musts > 5){
+      toast(musts > 5 ? 'Max 5 must-haves' : 'Add ≥3 features and sort each one');
+      return;
+    }
+  }
+  editingSection = null;
+  renderReview();
+  scheduleSave(true);
+}
+
+function featChips(bucket, label){
+  const items = feats.filter(f=>f.bucket===bucket);
+  if(!items.length) return '';
+  return `<div style="margin-top:10px"><dt>${label}</dt><dd><div class="rev-chips">${
+    items.map(f=>`<span class="rev-chip${bucket==='M'?' m':''}">${esc(f.name)}</span>`).join('')
+  }</div></dd></div>`;
+}
+
+function reviewPills(groupId, options, current){
+  return `<div class="pills" data-sync="${groupId}">` +
+    options.map(v => {
+      const on = v === current ? ' on' : '';
+      return `<button type="button" class="pill${on}" data-v="${esc(v)}">${esc(v)}</button>`;
+    }).join('') +
+    `</div>`;
+}
+
+function wireReviewPills(root){
+  root.querySelectorAll('.pills[data-sync]').forEach(group => {
+    group.addEventListener('click', e => {
+      const p = e.target.closest('.pill'); if(!p) return;
+      group.querySelectorAll('.pill').forEach(x => x.classList.remove('on'));
+      p.classList.add('on');
+      setPill(group.dataset.sync, p.dataset.v);
+      scheduleSave();
+    });
+  });
+}
+
+function sectionHead(title, sec){
+  if(submitted) return `<div class="rev-head"><h3>${title}</h3></div>`;
+  if(editingSection === sec){
+    return `<div class="rev-head"><h3>${title}</h3><button type="button" class="rev-edit" onclick="doneEdit()">Done</button></div>`;
+  }
+  return `<div class="rev-head"><h3>${title}</h3><button type="button" class="rev-edit" onclick="startEdit('${sec}')">Edit</button></div>`;
+}
+
+function renderReview(){
+  const book = $('stickyBook');
+  if(book) book.href = window.PP_BOOKING_URL;
+
+  const about = editingSection === 'about' ? `
+    <div class="rev-fields">
+      <label for="r_name">Your name</label>
+      <input type="text" id="r_name" value="${esc(val('f_name'))}">
+      <label for="r_company">Company / project</label>
+      <input type="text" id="r_company" value="${esc(val('f_company'))}">
+      <label for="r_email">Email</label>
+      <input type="email" id="r_email" value="${esc(val('f_email'))}">
+      <button type="button" class="btn btn-primary rev-done" onclick="doneEdit()">Done</button>
+    </div>` : `<dl>
+      <div><dt>Name</dt>${dd(val('f_name'))}</div>
+      <div><dt>Company</dt>${dd(val('f_company'))}</div>
+      <div><dt>Email</dt>${dd(val('f_email'))}</div>
+    </dl>`;
+
+  const problem = editingSection === 'problem' ? `
+    <div class="rev-fields">
+      <label for="r_problem">What problem are you solving?</label>
+      <textarea id="r_problem">${esc(val('f_problem'))}</textarea>
+      <label for="r_painwho">Who feels this pain most?</label>
+      <textarea id="r_painwho">${esc(val('f_painwho'))}</textarea>
+      <label for="r_today">How do they solve it today?</label>
+      <textarea id="r_today">${esc(val('f_today'))}</textarea>
+      <button type="button" class="btn btn-primary rev-done" onclick="doneEdit()">Done</button>
+    </div>` : `<dl>
+      <div><dt>What problem are you solving?</dt>${dd(val('f_problem'))}</div>
+      <div><dt>Who feels it most?</dt>${dd(val('f_painwho'))}</div>
+      <div><dt>How is it solved today?</dt>${dd(val('f_today'))}</div>
+    </dl>`;
+
+  const users = editingSection === 'users' ? `
+    <div class="rev-fields">
+      <label for="r_user">Primary user</label>
+      <textarea id="r_user">${esc(val('f_user'))}</textarea>
+      <label for="r_payer">Who pays?</label>
+      <input type="text" id="r_payer" value="${esc(val('f_payer'))}">
+      <label>Market type</label>
+      ${reviewPills('p_market', ['B2B','B2C','B2B2C','Marketplace'], pillVal('p_market'))}
+      <button type="button" class="btn btn-primary rev-done" onclick="doneEdit()">Done</button>
+    </div>` : `<dl>
+      <div><dt>Primary user</dt>${dd(val('f_user'))}</div>
+      <div><dt>Who pays?</dt>${dd(val('f_payer'))}</div>
+      <div><dt>Market</dt>${dd(pillVal('p_market'))}</div>
+    </dl>`;
+
+  const solution = editingSection === 'solution' ? `
+    <div class="rev-fields">
+      <label for="r_pitch">One-liner</label>
+      <input type="text" id="r_pitch" value="${esc(val('f_pitch'))}">
+      <label for="r_magic">Magic moment</label>
+      <textarea id="r_magic">${esc(val('f_magic'))}</textarea>
+      <label>What exists already?</label>
+      ${reviewPills('p_stage', ['Just the idea','Designs / mockups','Prototype','Live product'], pillVal('p_stage'))}
+      <button type="button" class="btn btn-primary rev-done" onclick="doneEdit()">Done</button>
+    </div>` : `<dl>
+      <div><dt>One-liner</dt>${dd(val('f_pitch'))}</div>
+      <div><dt>Magic moment</dt>${dd(val('f_magic'))}</div>
+      <div><dt>Current stage</dt>${dd(pillVal('p_stage'))}</div>
+    </dl>`;
+
+  const features = editingSection === 'features' ? `
+    <div class="rev-fields">
+      <div class="legend">
+        <span><b>M</b> Must</span><span><b>S</b> Should</span><span><b>C</b> Could</span><span><b>W</b> Won't</span>
+      </div>
+      <div class="featadd">
+        <input type="text" id="r_featin" placeholder="Add a feature" onkeydown="if(event.key==='Enter'){event.preventDefault();addFeatFromReview()}">
+        <button type="button" class="btn btn-primary" onclick="addFeatFromReview()">Add</button>
+      </div>
+      <div id="r_featlist"></div>
+      <p class="mustmeter" id="r_mustmeter">Must-haves: 0 / 5</p>
+      <button type="button" class="btn btn-primary rev-done" onclick="doneEdit()">Done</button>
+    </div>` : `<dl>
+      ${featChips('M','Must-have (v1)') || '<div><dt>Must-have</dt><dd class="empty">None</dd></div>'}
+      ${featChips('S','Should-have')}
+      ${featChips('C','Could-have')}
+      ${featChips('W',"Won't-have (v1)")}
+    </dl>`;
+
+  const constraints = editingSection === 'constraints' ? `
+    <div class="rev-fields">
+      <label>Launch window</label>
+      ${reviewPills('p_launch', ['< 6 weeks','6–12 weeks','3–6 months','Flexible'], pillVal('p_launch'))}
+      <label>Budget</label>
+      ${reviewPills('p_budget', ['< $10k','$10k–$25k','$25k–$75k','$75k+'], pillVal('p_budget'))}
+      <label>Platform</label>
+      ${reviewPills('p_platform', ['Web app','Mobile app','Web + mobile'], pillVal('p_platform'))}
+      <label for="r_integrations">Integrations</label>
+      <textarea id="r_integrations">${esc(val('f_integrations'))}</textarea>
+      <label for="r_compliance">Compliance</label>
+      <textarea id="r_compliance">${esc(val('f_compliance'))}</textarea>
+      <button type="button" class="btn btn-primary rev-done" onclick="doneEdit()">Done</button>
+    </div>` : `<dl>
+      <div><dt>Launch window</dt>${dd(pillVal('p_launch'))}</div>
+      <div><dt>Budget</dt>${dd(pillVal('p_budget'))}</div>
+      <div><dt>Platform</dt>${dd(pillVal('p_platform'))}</div>
+      <div><dt>Integrations</dt>${dd(val('f_integrations') || 'None specified')}</div>
+      <div><dt>Compliance</dt>${dd(val('f_compliance') || 'None specified')}</div>
+    </dl>`;
+
+  const success = editingSection === 'success' ? `
+    <div class="rev-fields">
+      <label for="r_success">3-month metric</label>
+      <textarea id="r_success">${esc(val('f_success'))}</textarea>
+      <label for="r_risk">Riskiest assumption</label>
+      <textarea id="r_risk">${esc(val('f_risk'))}</textarea>
+      <button type="button" class="btn btn-primary rev-done" onclick="doneEdit()">Done</button>
+    </div>` : `<dl>
+      <div><dt>3-month metric</dt>${dd(val('f_success'))}</div>
+      <div><dt>Riskiest assumption</dt>${dd(val('f_risk'))}</div>
+    </dl>`;
+
+  const materials = editingSection === 'materials' ? `
+    <div class="rev-fields">
+      <label for="r_links">Links</label>
+      <textarea id="r_links" placeholder="https://">${esc(val('f_links'))}</textarea>
+      <label>Uploads</label>
+      <p style="color:var(--ink-2);font-size:14px;margin:4px 0 10px">${uploaded.length ? uploaded.map(f=>esc(f.name)+' ('+esc(f.status)+')').join(', ') : 'None yet — use Add files below.'}</p>
+      <div class="upload" id="r_dropzone">
+        <input type="file" id="r_filein" multiple accept=".pdf,.doc,.docx,.ppt,.pptx,.key,.png,.jpg,.jpeg,.webp,.gif,.txt,.md,application/pdf">
+        <p>Drop files here or click to browse</p>
+      </div>
+      <div class="flist" id="r_flist"></div>
+      <button type="button" class="btn btn-primary rev-done" onclick="doneEdit()">Done</button>
+    </div>` : `<dl>
+      <div><dt>Links</dt>${dd(val('f_links') || 'None')}</div>
+      <div><dt>Uploads</dt>${dd(uploaded.length ? uploaded.map(f=>f.name+' ('+f.status+')').join(', ') : 'None')}</div>
+    </dl>`;
+
+  $('review').innerHTML = `
+    <div class="rev-sec${editingSection==='about'?' editing':''}">${sectionHead('About you','about')}${about}</div>
+    <div class="rev-sec${editingSection==='problem'?' editing':''}">${sectionHead('The Problem','problem')}${problem}</div>
+    <div class="rev-sec${editingSection==='users'?' editing':''}">${sectionHead('Target Users','users')}${users}</div>
+    <div class="rev-sec${editingSection==='solution'?' editing':''}">${sectionHead('The Solution','solution')}${solution}</div>
+    <div class="rev-sec${editingSection==='features'?' editing':''}">${sectionHead('Features (MoSCoW)','features')}${features}</div>
+    <div class="rev-sec${editingSection==='constraints'?' editing':''}">${sectionHead('Constraints','constraints')}${constraints}</div>
+    <div class="rev-sec${editingSection==='success'?' editing':''}">${sectionHead('Success','success')}${success}</div>
+    <div class="rev-sec${editingSection==='materials'?' editing':''}">${sectionHead('Materials','materials')}${materials}</div>
+  `;
+
+  wireReviewEditors();
+}
+
+function wireReviewEditors(){
+  const root = $('review');
+  wireReviewPills(root);
+
+  const pairs = [
+    ['r_name','f_name'],['r_company','f_company'],['r_email','f_email'],
+    ['r_problem','f_problem'],['r_painwho','f_painwho'],['r_today','f_today'],
+    ['r_user','f_user'],['r_payer','f_payer'],
+    ['r_pitch','f_pitch'],['r_magic','f_magic'],
+    ['r_integrations','f_integrations'],['r_compliance','f_compliance'],
+    ['r_success','f_success'],['r_risk','f_risk'],['r_links','f_links'],
+  ];
+  pairs.forEach(([r,f]) => bindSync(r,f));
+
+  if(editingSection === 'features'){
+    renderFeatsReview();
+  }
+  if(editingSection === 'materials'){
+    wireReviewUpload();
+    renderFilesReview();
+  }
+}
+
+function addFeatFromReview(){
+  const input = $('r_featin');
+  const v = (input && input.value || '').trim();
+  if(!v) return;
+  feats.push({name:v, bucket:null});
+  input.value = '';
+  renderFeatsReview();
+  scheduleSave();
+}
+
+function renderFeatsReview(){
+  const list = $('r_featlist'); if(!list) return;
+  list.innerHTML = '';
+  feats.forEach((f,i)=>{
+    const row = document.createElement('div'); row.className='feat';
+    row.innerHTML = '<span class="name"></span><span class="buckets">'+
+      ['M','S','C','W'].map(b=>`<button type="button" class="bk ${b}${f.bucket===b?' on':''}" data-i="${i}" data-b="${b}">${b}</button>`).join('')+
+      '</span><button type="button" class="del" title="Remove">✕</button>';
+    row.querySelector('.name').textContent = f.name;
+    row.querySelector('.del').onclick = ()=>{ feats.splice(i,1); renderFeatsReview(); scheduleSave(); };
+    row.querySelectorAll('.bk').forEach(btn => {
+      btn.onclick = ()=>{ feats[+btn.dataset.i].bucket = btn.dataset.b; renderFeatsReview(); scheduleSave(); };
+    });
+    list.appendChild(row);
+  });
+  const musts = feats.filter(f=>f.bucket==='M').length;
+  const m = $('r_mustmeter');
+  if(m){
+    m.textContent = 'Must-haves: '+musts+' / 5' + (musts>5 ? ' — that\'s too many' : '');
+    m.className = 'mustmeter' + (musts>5 ? ' bad' : '');
+  }
+  renderFeats(); // keep step-4 UI in sync
+}
+
+function renderFilesReview(){
+  const list = $('r_flist'); if(!list) return;
+  list.innerHTML = '';
+  uploaded.forEach(f=>{
+    const row = document.createElement('div'); row.className='frow';
+    row.innerHTML = `<span></span><span class="st"></span>`;
+    row.children[0].textContent = f.name;
+    row.children[1].textContent = f.status;
+    list.appendChild(row);
+  });
+}
+
+function wireReviewUpload(){
+  const drop = $('r_dropzone');
+  const filein = $('r_filein');
+  if(!drop || !filein || drop.dataset.wired) return;
+  drop.dataset.wired = '1';
+  drop.addEventListener('click', ()=>filein.click());
+  drop.addEventListener('dragover', e=>{ e.preventDefault(); drop.classList.add('drag'); });
+  drop.addEventListener('dragleave', ()=>drop.classList.remove('drag'));
+  drop.addEventListener('drop', e=>{
+    e.preventDefault(); drop.classList.remove('drag');
+    handleFiles(e.dataTransfer.files).then(()=>renderFilesReview());
+  });
+  filein.addEventListener('change', ()=>handleFiles(filein.files).then(()=>renderFilesReview()));
+}
+
+function payload(){
+  return {
+    name: val('f_name'),
+    email: val('f_email'),
+    company: val('f_company'),
+    problem: val('f_problem'),
+    painWho: val('f_painwho'),
+    today: val('f_today'),
+    primaryUser: val('f_user'),
+    payer: val('f_payer'),
+    market: pillVal('p_market'),
+    pitch: val('f_pitch'),
+    magicMoment: val('f_magic'),
+    productStage: pillVal('p_stage'),
+    features: feats,
+    launchWindow: pillVal('p_launch'),
+    budget: pillVal('p_budget'),
+    platform: pillVal('p_platform'),
+    integrations: val('f_integrations'),
+    links: val('f_links'),
+    compliance: val('f_compliance'),
+    successMetric: val('f_success'),
+    riskiestAssumption: val('f_risk'),
+    briefMarkdown: step>=7 ? buildBrief() : undefined,
+    invite: invite || undefined,
+  };
+}
+
+function scheduleSave(immediate){
+  if(!recordId) return;
+  clearTimeout(saveTimer);
+  const run = async ()=>{
+    setSave('Saving…');
+    const ok = await api({ action:'save', recordId, ...payload(), step }, true);
+    setSave(ok ? 'Saved' : 'Save failed');
+  };
+  if(immediate) run();
+  else saveTimer = setTimeout(run, 700);
+}
+
+['f_name','f_company','f_email','f_problem','f_painwho','f_today','f_user','f_payer','f_pitch','f_magic','f_integrations','f_compliance','f_success','f_risk','f_links']
+  .forEach(id => { const el=$(id); if(el) el.addEventListener('input', ()=>scheduleSave()); });
+
+async function api(body, quiet){
+  try{
+    const res = await fetch('/api/discovery', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(body),
+    });
+    const json = await res.json().catch(()=>({}));
+    if(!res.ok){
+      if(!quiet){
+        setSave(json.error || 'Save failed');
+        toast(json.error || 'Could not save — check Airtable setup');
+      }
+      console.error(json);
+      return false;
+    }
+    if(json.recordId){
+      recordId = json.recordId;
+      localStorage.setItem('pp_discovery_id', recordId);
+    }
+    return true;
+  }catch(e){
+    if(!quiet) toast('Network error — is vercel dev running?');
+    console.error(e);
+    return false;
+  }
+}
+
+function bucketList(b){
+  const items = feats.filter(f=>f.bucket===b).map(f=>'- '+f.name);
+  return items.length ? items.join('\n') : '- (none)';
+}
+function buildBrief(){
+  return `# MVP BRIEF — ${val('f_company')}
+Prepared via Pilot Projects MVP Discovery · ${new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})}
+
+## Founder
+${val('f_name')} · ${val('f_email')}
+
+## Problem
+${val('f_problem')}
+
+**Who feels it most:** ${val('f_painwho')}
+
+**How it's solved today:** ${val('f_today')}
+
+## Users & Market
+**Primary user:** ${val('f_user')}
+**Who pays:** ${val('f_payer')}
+**Market:** ${pillVal('p_market')}
+
+## Solution
+**One-liner:** ${val('f_pitch')}
+**Magic moment:** ${val('f_magic')}
+**Current stage:** ${pillVal('p_stage')}
+
+## Feature Prioritization (MoSCoW)
+### Must-have (v1 scope)
+${bucketList('M')}
+### Should-have
+${bucketList('S')}
+### Could-have
+${bucketList('C')}
+### Won't-have (v1)
+${bucketList('W')}
+
+## Constraints
+**Launch window:** ${pillVal('p_launch')}
+**Budget:** ${pillVal('p_budget')}
+**Platform:** ${pillVal('p_platform')}
+**Integrations:** ${val('f_integrations') || 'None specified'}
+**Links / materials:** ${val('f_links') || 'None specified'}
+**Compliance:** ${val('f_compliance') || 'None specified'}
+
+## Success
+**3-month metric:** ${val('f_success')}
+**Riskiest assumption:** ${val('f_risk')}
+`;
+}
+
+async function submitBrief(){
+  if(editingSection) doneEdit();
+  const btn = $('submitBtn');
+  btn.disabled = true; btn.textContent = 'Sending…';
+  const ok = await api({
+    action:'submit',
+    recordId,
+    ...payload(),
+    briefMarkdown: buildBrief(),
+    step: 8,
+  });
+  if(ok){
+    submitted = true;
+    editingSection = null;
+    renderReview();
+    updateSticky(true);
+    $('sentPanel').classList.add('show');
+    toast('Brief sent — we\'ll review within 48 hours');
+    window.scrollTo({top:0,behavior:'smooth'});
+  } else {
+    btn.disabled = false;
+    btn.textContent = 'Send to Pilot Projects →';
+  }
+}
+
+function toast(msg){
+  const t=$('toast'); t.textContent=msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2200);
+}
+
+/* Uploads */
+const drop = $('dropzone');
+const filein = $('filein');
+drop.addEventListener('click', ()=>filein.click());
+drop.addEventListener('dragover', e=>{ e.preventDefault(); drop.classList.add('drag'); });
+drop.addEventListener('dragleave', ()=>drop.classList.remove('drag'));
+drop.addEventListener('drop', e=>{
+  e.preventDefault(); drop.classList.remove('drag');
+  handleFiles(e.dataTransfer.files);
+});
+filein.addEventListener('change', ()=>handleFiles(filein.files));
+
+function renderFiles(){
+  const list=$('flist'); list.innerHTML='';
+  uploaded.forEach(f=>{
+    const row=document.createElement('div'); row.className='frow';
+    row.innerHTML=`<span></span><span class="st"></span>`;
+    row.children[0].textContent=f.name;
+    row.children[1].textContent=f.status;
+    list.appendChild(row);
+  });
+}
+
+async function handleFiles(fileList){
+  if(!recordId){
+    toast('Complete the first step so we can attach files to your brief');
+    return;
+  }
+  for(const file of Array.from(fileList||[])){
+    const entry={name:file.name,status:'Uploading…'};
+    uploaded.push(entry); renderFiles(); renderFilesReview();
+    if(file.size > 8*1024*1024){ entry.status='Too large'; renderFiles(); renderFilesReview(); continue; }
+    try{
+      const fileBase64 = await readFileAsBase64(file);
+      const res = await fetch('/api/discovery-upload', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({
+          recordId,
+          filename: file.name,
+          contentType: file.type || 'application/octet-stream',
+          fileBase64,
+        }),
+      });
+      const json = await res.json().catch(()=>({}));
+      entry.status = res.ok ? 'Uploaded' : (json.error || 'Failed');
+    }catch(e){
+      entry.status='Failed';
+      console.error(e);
+    }
+    renderFiles(); renderFilesReview();
+  }
+}
+function readFileAsBase64(file){
+  return new Promise((resolve,reject)=>{
+    const r=new FileReader();
+    r.onload=()=>resolve(String(r.result).split(',')[1]||'');
+    r.onerror=reject;
+    r.readAsDataURL(file);
+  });
+}
+
+/* Resume */
+async function tryResume(){
+  if(!recordId) return;
+  setSave('Restoring…');
+  try{
+    const res = await fetch('/api/discovery?id='+encodeURIComponent(recordId));
+    if(!res.ok){ setSave(''); return; }
+    const json = await res.json();
+    const f = json.fields || {};
+    if(f.Name) $('f_name').value = f.Name;
+    if(f.Email) $('f_email').value = f.Email;
+    if(f.Company) $('f_company').value = f.Company;
+    if(f.Problem) $('f_problem').value = f.Problem;
+    if(f['Pain Who']) $('f_painwho').value = f['Pain Who'];
+    if(f.Today) $('f_today').value = f.Today;
+    if(f['Primary User']) $('f_user').value = f['Primary User'];
+    if(f.Payer) $('f_payer').value = f.Payer;
+    setPill('p_market', f.Market);
+    if(f.Pitch) $('f_pitch').value = f.Pitch;
+    if(f['Magic Moment']) $('f_magic').value = f['Magic Moment'];
+    setPill('p_stage', f['Product Stage']);
+    setPill('p_launch', f['Launch Window']);
+    setPill('p_budget', f.Budget);
+    setPill('p_platform', f.Platform);
+    if(f.Integrations) $('f_integrations').value = f.Integrations;
+    if(f.Links) $('f_links').value = f.Links;
+    if(f.Compliance) $('f_compliance').value = f.Compliance;
+    if(f['Success Metric']) $('f_success').value = f['Success Metric'];
+    if(f['Riskiest Assumption']) $('f_risk').value = f['Riskiest Assumption'];
+    if(f['Features JSON']){
+      try{
+        const parsed = JSON.parse(f['Features JSON']);
+        feats.splice(0, feats.length, ...(Array.isArray(parsed)?parsed:[]));
+        renderFeats();
+      }catch(_){}
+    }
+    if(typeof f.Step === 'number' && f.Step > 0 && f.Status !== 'Submitted'){
+      step = Math.min(f.Step, 7);
+      show(step);
+      toast('Picking up where you left off');
+    }
+    setSave('Saved');
+  }catch(e){
+    setSave('');
+  }
+}
+
+show(0);
+tryResume();
+</script>
+</body>
+</html>

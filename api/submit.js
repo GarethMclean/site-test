@@ -1,3 +1,6 @@
+const { loadLocalEnv } = require('./_load-env');
+loadLocalEnv();
+
 const BASE_ID = 'app6LArSCs8OBia9i';
 const TABLE_ID = 'tblMndLO5QhRSmGm4';
 
